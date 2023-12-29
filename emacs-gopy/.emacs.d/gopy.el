@@ -3,13 +3,10 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
   (add-hook 'go-mode-hook #'lsp-deferred)
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
- (gofmt-command "gofumpt")
- (lsp-go-gopls-server-path "/go/bin/gopls"))
-(add-hook 'before-save-hook 'gofmt-before-save)
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t)
+  (add-hook 'before-save-hook #'gofmt-before-save)
+  (gofmt-command "gofumpt"))
 
 (use-package lsp-mode
   :ensure t
@@ -28,9 +25,9 @@
 ;; (use-package dap-python)
 
 (use-package lsp-pyright
+  :ensure t)
+
+(use-package python-mode
   :ensure t
   :init
-  (add-hook 'python-mode-hook #'lsp-deferred))
-
-(setq major-mode-remap-alist
-      '((python-mode . python-ts-mode)))
+  (add-hook 'python-mode-hook 'lsp))
