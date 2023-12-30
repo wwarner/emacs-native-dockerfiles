@@ -6,15 +6,11 @@
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-K") 'kill-this-buffer)
 (global-set-key (kbd "M-0") 'delete-window)
-(global-unset-key (kbd "C-;"))
 
 (setq scroll-preserve-screen-position 1)
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
 (global-set-key (kbd "M-Z") 'fzf)
-(add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-o"))))
-(add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-P"))))
-(add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N"))))
 (setq switch-to-prev-buffer-skip
        (lambda (win buf bok)
      (let ( (b (buffer-name buf)) )
@@ -35,33 +31,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ag-reuse-buffers t)
- '(custom-safe-themes
-   '("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476"
-     "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088"
-     "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c"
-     "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f"
-     "830877f4aab227556548dc0a28bf395d0abe0e3a0ab95455731c9ea5ab5fe4e1"
-     "285d1bf306091644fb49993341e0ad8bafe57130d9981b680c1dbd974475c5c7"
-     "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077"
-     "57a29645c35ae5ce1660d5987d3da5869b048477a7801ce7ab57bfb25ce12d3e"
-     "1a10896643cce14633f9e2b9f3727761cc528ee7bbbe7e8efeb442e067da1a96"
-     "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773"
-     default))
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(inhibit-startup-screen t)
  '(markdown-command "markdown")
  '(package-selected-packages
-   '(tree-sitter tree-sitter-langs k8s-mode origami w3m folding
+   '(k8s-mode origami w3m folding
 		 clipetty tramp-container ag use-package
 		 project prettier prettier-js dockerfile-mode
 		 glsl-mode docker docker-compose-mode
 		 company string-inflection projectile json-mode
-		 uuidgen tide rainbow-delimiters
-		 zenburn-theme solarized-theme iedit))
- '(rg-command-line-flags '("--ignore-file ~/.rgignore"))
- '(rg-custom-type-aliases nil)
- '(rg-hide-command nil)
- '(rg-ignore-ripgreprc nil)
+		 uuidgen tide rainbow-delimiters iedit))
  '(safe-local-variable-values
    '((project-root . "~/mm/github.com/MediaMath")))
  '(show-paren-mode t)
@@ -81,16 +60,20 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-;;(load-theme 'solarized-zenburn t)
-;;(load-theme 'solarized-dark-high-contrast t)
+
+;; Basic things common to all programming modes
+;;   show line numbers
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(add-hook 'yaml-mode-hook #'display-line-numbers-mode)
+
+;;   comment and uncooment shortcuts
 (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c C-c")
  'comment-region)))
 (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
- 'uncomment-region)))
+						    'uncomment-region)))
+;;   turn on iedit at the cursor
 (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c ;")
- 'iedit-mode)))
+						    'iedit-mode)))
+;;   toggle visibility of the current code block
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c <down>") 'hs-toggle-hiding)))
 
@@ -127,71 +110,53 @@
   (load bootstrap-file nil 'nomessage))
 
 (use-package yaml-pro
-  :straight (yaml-pro :type git :host github :repo "zkry/yaml-pro"))
+  :ensure t
+  :straight (yaml-pro :type git :host github :repo "zkry/yaml-pro")
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-pro-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-pro-mode))
+  (add-hook 'yaml-pro-mode-hook #'display-line-numbers-mode)
+  (add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-c")
+							  'comment-region)))
+  (add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
+							  'uncomment-region)))
+  (add-hook 'yaml-pro-mode-hook (lambda () (setq indent-tabs-mode nil))))
 
 (use-package rg
-  :straight (rg :type git :host github :repo "dajva/rg.el"))
-(autoload 'wgrep-rg-setup "wgrep-rg")
-(add-hook 'rg-mode-hook 'wgrep-rg-setup)
-
-;;;;
-;; treesitter
-;;;;
-;; cribbing from
-;; https://github.com/nattakit-h/erica/blob/76d92526e9324407a96721fd7ff514abf117ac9f/init.el#L245-L286
-(defconst data-directory (expand-file-name "data" user-emacs-directory))
-(use-package treesit
-  :ensure nil
-  :commands (treesit-install-language-grammar treesit-install-all-languages)
-  :init
-  (setq treesit-language-source-alist
-	'((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
-	  (c . ("https://github.com/tree-sitter/tree-sitter-c"))
-	  (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
-	  (css . ("https://github.com/tree-sitter/tree-sitter-css"))
-	  (go . ("https://github.com/tree-sitter/tree-sitter-go"))
-	  (html . ("https://github.com/tree-sitter/tree-sitter-html"))
-	  (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
-	  (json . ("https://github.com/tree-sitter/tree-sitter-json"))
-	  (lua . ("https://github.com/tjdevries/tree-sitter-lua"))
-	  (make . ("https://github.com/alemuller/tree-sitter-make"))
-	  (ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" nil "ocaml/src"))
-	  (python . ("https://github.com/tree-sitter/tree-sitter-python"))
-	  (php . ("https://github.com/tree-sitter/tree-sitter-php"))
-	  (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src"))
-	  (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
-	  (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
-	  (sql . ("https://github.com/m-novikov/tree-sitter-sql"))
-	  (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
-	  (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
-	  (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
-  (setq treesit-extra-load-path (list (expand-file-name "treesit" data-directory)))
-  (setq major-mode-remap-alist '((c-mode . c-ts-mode) (c++-mode . c++-ts-mode)))
+  :ensure t
+  :straight (rg :type git :host github :repo "dajva/rg.el")
   :config
-  (defun treesit-install-all-languages ()
-    "Install all languages specified by `treesit-language-source-alist'."
-    (interactive)
-    (let ((languages (mapcar 'car treesit-language-source-alist)))
-      (dolist (lang languages)
-	(treesit-install-language-grammar lang)
-	(message "`%s' parser was installed." lang)
-	(sit-for 0.75))))
-  (advice-add
-   'treesit--install-language-grammar-1
-   :around
-   (lambda (old-function out-dir &rest arguments)
-     (apply old-function (car treesit-extra-load-path) arguments))))
-;; end cribbing
+  (when (file-exists-p "~/.rgignore") (setq rg-command-line-flags '("--ignore-file ~/.rgignore")))
+  (setq rg-custom-type-aliases nil
+	rg-hide-command nil
+	rg-ignore-ripgreprc nil)
+  ;; gotta be able to cycle through buffers even in rg mode
+  (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-o"))))
+  (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-P"))))
+  (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N"))))
+  (autoload 'wgrep-rg-setup "wgrep-rg")
+  (add-hook 'rg-mode-hook 'wgrep-rg-setup))
 
-;; yaml-pro-mode allows for navigation and folding of yaml.
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-pro-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-pro-mode))
-(add-hook 'yaml-pro-mode-hook #'display-line-numbers-mode)
-(add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-c")
-'comment-region)))
-(add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
-							'uncomment-region)))
-(add-hook 'yaml-pro-mode-hook (lambda () (setq indent-tabs-mode nil)))
+(use-package tree-sitter :ensure t
+  :config (setq treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+     (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
+;; (use-package ts-fold
+;;   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold"))
 
 ;; Company mode
 (setq company-idle-delay 0)

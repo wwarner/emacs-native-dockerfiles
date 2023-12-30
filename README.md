@@ -2,14 +2,26 @@ Dockerfiles for Emacs With Native Comp
 ======================================
 
 Use Native Compilation, LSP, Gopls, Pyright, Ripgrep, Fzf, Treemacs
-and HideShow with less trial and error.
+and HideShow with less trial and error. Runs the same everywhere!
+
+## Installation
+
+    git clone git@github.com:wwarner/emacs-native-dockerfiles.git
+	cd emacs-native-dockerfiles
+	make # takes about 30 minutes on my laptop
+	docker run -it --rm --name emacs \
+	  -v$HOME/src:/root/src \
+	  -v$HOME/.gitconfig:/root/.gitconfig \
+	  -v$HOME/.ssh:/root/.ssh \
+	  -v$HOME/.aws:/root/.aws \
+	  emacs-gopy
 
 ## Native Compliation
 
 Emacs lisp can be compiled to native machine code when built
 `--with-native-compilation` enabled, resulting in a perceptible
 performance improvement. There are several OS level dependencides
-required by native compilation that are captured in ths Dockerfile,
+required by native compilation that are captured in this Dockerfile,
 including libgccjit and gnutls.
 
 ## Tree Sitter
@@ -28,8 +40,8 @@ I currently work in Go and Python, and I've installed the dependencies
 needed for syntax highlighting, auto-completion and code
 formatting.
 
-For Go, `gopls` is installed for the language server, `gofumpt` for
-code formatting and `dlv` for source level debugging.
+For Go, `gopls` is the language server, `gofumpt` for code formatting
+and `dlv` for source level debugging.
 
 For Python, a virtual environment is installed and `pyright` is used
 for the language server.
@@ -37,27 +49,23 @@ for the language server.
 ## No X11
 
 I have been running emacs without windows for several years now
-because it's so portable. In particular, when working with a lot of
-data, I find that I need to run my editor on a server in the
+because it's so fast and portable. In particular, when working with a
+lot of data, I find that I need to run my editor on a server in the
 cloud. Somewhere along the line, I realized that Emacs is a lot more
-fun, and certainly more portable, without graphics. The compilation
-step in this build is also much much faster `--without-x11`. If you
-want your graphics back, then just drop that configuration flag.
+fun without graphics. The compilation step in this build is also much
+much faster `--without-x11`. If you want your graphics back, then just
+drop that configuration flag.
 
-## Emacs
+### Frequently Used Keys
 
-My init.el is a mish-mash of selcted packages, `use-package` and
-`straight` installs. It's intended to provide utility without becoming
-overly complex. I find most Emacs defaults acceptable, and I never
-need more than a single file to create a pleasant experience. While
-this tiny amount of customization fits easily into a single elisp
-file, the supporting setup with its dependencies requires this
-Dockerfile.
-
-## Installation
-
-    make
-    docker run -v$HOME/.ssh:/root/.ssh -v$HOME/src:/root/src -it emacs-gopy
+* Cycle through windows with M-o
+* Cycle back and forth through buffers with M-n and M-p
+* Kill buffer with M-K
+* Delete window with M-0
+* Edit all occurances of the current token in the buffer with C-c ; (iedit)
+* Fuzzy find files with M-Z (fzf)
+* Coment code with C-c C-c, and uncomment with C-c C-v
+* Collapse code block with C-c <down>; repeat to show it again
 
 ## References
 
