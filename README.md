@@ -1,5 +1,5 @@
-Dockerfiles for Emacs With Native Comp
-======================================
+Dockerfiles for Emacs With Native Compilation
+=============================================
 
 Use Native Compilation, LSP, Gopls, Pyright, Ripgrep, Fzf, Treemacs
 and HideShow with less trial and error. Runs the same everywhere!
@@ -23,11 +23,6 @@ Emacs lisp can be compiled to native machine code when built
 performance improvement. There are several OS level dependencides
 required by native compilation that are captured in this Dockerfile,
 including libgccjit and gnutls.
-
-## Tree Sitter
-
-Tree sitter is enabled by default in Emacs 29 and better, and care is
-taken here to both enable it and install the necessary dependencies
 
 ## Native JSON with libjansson
 
@@ -70,7 +65,7 @@ drop that configuration flag.
 ## References
 
 [docker-emacs](https://github.com/Silex/docker-emacs) (not compiled
-with --native-comp so had to start fresh)
+with --native-comp or for `arm64` so decided to start fresh)
 
 [EmacsPlus](https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus%4030.rb)
 

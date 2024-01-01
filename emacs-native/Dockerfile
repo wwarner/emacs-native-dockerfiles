@@ -1,8 +1,7 @@
 FROM golang:1.21-bookworm as emacs-src
 
 WORKDIR /opt
-# GNU Emacs 30.0.50 12/29/23; change to emacs-30 when it's released
-RUN git clone --depth 1 --branch master https://git.savannah.gnu.org/git/emacs.git
+RUN git clone --depth 1 --branch emacs-29 https://git.savannah.gnu.org/git/emacs.git
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
