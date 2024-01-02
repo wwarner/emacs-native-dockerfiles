@@ -6,9 +6,20 @@ and HideShow with less trial and error. Runs the same everywhere!
 
 ## Installation
 
+Run directly from the image at dockerhub:
+
+	docker run -it --rm --name emacs \
+	  -v$HOME/src:/root/src \
+	  -v$HOME/.gitconfig:/root/.gitconfig \
+	  -v$HOME/.ssh:/root/.ssh \
+	  -v$HOME/.aws:/root/.aws \
+	  wwarner/emacs-gopy:latest
+
+Or build it locally
+
     git clone git@github.com:wwarner/emacs-native-dockerfiles.git
 	cd emacs-native-dockerfiles
-	make # takes about 30 minutes on my laptop
+	make emacs-gopy
 	docker run -it --rm --name emacs \
 	  -v$HOME/src:/root/src \
 	  -v$HOME/.gitconfig:/root/.gitconfig \
@@ -61,6 +72,20 @@ drop that configuration flag.
 * Fuzzy find files with M-Z (fzf)
 * Coment code with C-c C-c, and uncomment with C-c C-v
 * Collapse code block with C-c <down>; repeat to show it again
+
+Remarks:
+
+* Mount ~/.gitconfig to share your github email address and possibly
+  to share git repositories on the host with the guest. On Mac, with
+  Docker for Desktop, virtualization is set up such that user ids are
+  the same in the host and the guest and magit works without adding
+  directories to .gitconfig. However, on linux, or also on Mac using
+  Colima, the guest user ids are different, and git will not open the
+  repository unless the directory in the guest is added to .gitconfig.
+
+* Build and push with [Docker BuildKit](https://docs.docker.com/engine/reference/commandline/buildx_build/).
+  * It looks like this, but runs very very slowly when building the foreign arch.
+  `docker buildx build --platform linux/amd64,linux/arm64/v8 --push -t emacs-native:latest --progress plain .`
 
 ## References
 
