@@ -95,3 +95,5 @@ with --native-comp or for `arm64` so decided to start fresh)
 [EmacsPlus](https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus%4030.rb)
 
 [Mastering Emacs](https://www.masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation)
+
+[Spacemacs Terminal](https://github.com/troyp/spacemacs/wiki/Terminal)

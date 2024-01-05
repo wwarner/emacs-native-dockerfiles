@@ -56,4 +56,11 @@ COPY .emacs.d .emacs.d
 RUN mkdir .emacs.d/data
 RUN .emacs.d/postinstall.sh
 
+COPY xterm-24bit.terminfo /tmp/xterm-24bit.terminfo
+RUN /usr/bin/tic -x -o ~/.terminfo /tmp/xterm-24bit.terminfo
+ENV TERM=xterm-24bit
+ENV LC_ALL=C.utf8
+ENV LANG=C.UTF-8
+ENV LANGUAGE=C.UTF-8
+
 CMD ["emacs"]
