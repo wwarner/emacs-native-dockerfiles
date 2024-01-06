@@ -13,12 +13,13 @@
 
 FP=$(shell printf '%07d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
 ARCH=$(shell uname -m)
+BASE=${FP}-${ARCH}
 
 emacs-native:
 	docker build --progress plain -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:latest-${ARCH} -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
 
 emacs-gopy: emacs-native
-	docker build --progress plain -f emacs-gopy/Dockerfile -t emacs-gopy -t wwarner/emacs-gopy:latest-${ARCH} -t wwarner/emacs-gopy:${FP}-${ARCH} ./emacs-gopy
+	docker build --progress plain -f emacs-gopy/Dockerfile --build-arg BASE=${BASE} -t emacs-gopy -t wwarner/emacs-gopy:latest-${ARCH} -t wwarner/emacs-gopy:${FP}-${ARCH} ./emacs-gopy
 
 push: emacs-gopy
 	docker push wwarner/emacs-native:${FP}-${ARCH}
