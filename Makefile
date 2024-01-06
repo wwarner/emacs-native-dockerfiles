@@ -28,14 +28,24 @@ push: emacs-gopy
 
 manifests:
 	docker pull wwarner/emacs-native:${FP}-arm64
-	docker pull wwarner/emacs-native:${FP}-amd64
+	docker pull wwarner/emacs-native:${FP}-x86_64
 	docker manifest create wwarner/emacs-native:${FP} \
 	       --amend wwarner/emacs-native:${FP}-arm64 \
-               --amend wwarner/emacs-native:${FP}-amd64
+               --amend wwarner/emacs-native:${FP}-x86_64
 	docker manifest push wwarner/emacs-native:${FP}
 	docker pull wwarner/emacs-gopy:${FP}-arm64
-	docker pull wwarner/emacs-gopy:${FP}-amd64
+	docker pull wwarner/emacs-gopy:${FP}-x86_64
 	docker manifest create wwarner/emacs-gopy:${FP} \
 	       --amend wwarner/emacs-gopy:${FP}-arm64 \
-               --amend wwarner/emacs-gopy:${FP}-amd64
+               --amend wwarner/emacs-gopy:${FP}-x86_64
 	docker manifest push wwarner/emacs-gopy:${FP}
+	docker manifest rm wwarner/emacs-native:latest
+	docker manifest create wwarner/emacs-native:latest \
+	       --amend wwarner/emacs-native:${FP}-arm64 \
+               --amend wwarner/emacs-native:${FP}-x86_64
+	docker manifest push wwarner/emacs-native:latest
+	docker manifest rm wwarner/emacs-gopy:latest
+	docker manifest create wwarner/emacs-gopy:latest \
+	       --amend wwarner/emacs-gopy:${FP}-arm64 \
+               --amend wwarner/emacs-gopy:${FP}-x86_64
+	docker manifest push wwarner/emacs-gopy:latest
