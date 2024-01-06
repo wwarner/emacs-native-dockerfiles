@@ -17,10 +17,10 @@ ARCH=$(shell uname -m)
 emacs-native:
 	docker build --progress plain -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:latest-${ARCH} -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
 
-emacs-gopy:
-	docker build --platform linux/amd64 --progress plain -f emacs-gopy/Dockerfile -t emacs-gopy -t wwarner/emacs-gopy:latest-amd64 -t wwarner/emacs-gopy:${FP}-amd64 ./emacs-gopy
+emacs-gopy: emacs-native
+	docker build --progress plain -f emacs-gopy/Dockerfile -t emacs-gopy -t wwarner/emacs-gopy:latest-${ARCH} -t wwarner/emacs-gopy:${FP}-${ARCH} ./emacs-gopy
 
-push: emacs-native emacs-gopy
+push: emacs-gopy
 	docker push wwarner/emacs-native:${FP}-${ARCH}
 	docker push wwarner/emacs-gopy:${FP}-${ARCH}
 	docker push wwarner/emacs-native:latest-${ARCH}
