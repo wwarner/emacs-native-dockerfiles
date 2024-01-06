@@ -1,4 +1,4 @@
-FROM wwarner/emacs-native:emacs-29
+FROM wwarner/emacs-native
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \

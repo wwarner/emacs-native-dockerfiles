@@ -1,51 +1,41 @@
 .PHONY: emacs-native emacs-gopy
 
-# The first two stanzas build to the local architecture
+# To publish images, build arm on an M1, build amd on an ec2
+# instance. Push the tagged images to dockerhub. Then on either host,
+# pull down all the images, for every arch. From there, create and
+# then push the manifest.
+#
+# i.e.
+# on an arm host
+# % make push
+# now on an amd host
+# $ make push manifests
+
+FP=$(shell printf '%07d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
+ARCH=$(shell uname -m)
+
 emacs-native:
-	docker build --progress plain -f emacs-native/Dockerfile -t emacs-native ./emacs-native
+	docker build --progress plain -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:latest-${ARCH} -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
 
 emacs-gopy:
-	docker build --progress plain -f emacs-gopy/Dockerfile -t emacs-gopy ./emacs-gopy
+	docker build --platform linux/amd64 --progress plain -f emacs-gopy/Dockerfile -t emacs-gopy -t wwarner/emacs-gopy:latest-amd64 -t wwarner/emacs-gopy:${FP}-amd64 ./emacs-gopy
 
-# All that follows is for building and then pushing the images to
-# dockerhub. The build statements don't work properly, and just ignore
-# the `--platform` flag.
-#
-# To actually create images, build arm on an M1, build amd on an ec2
-# host. Push the tagged images to dockerhub. Then on either host, pull
-# down all the images, for every arch. From there, create and then
-# push the manifest.
+push: emacs-native emacs-gopy
+	docker push wwarner/emacs-native:${FP}-${ARCH}
+	docker push wwarner/emacs-gopy:${FP}-${ARCH}
+	docker push wwarner/emacs-native:latest-${ARCH}
+	docker push wwarner/emacs-gopy:latest-${ARCH}
 
-emacs-native-amd64:
-	docker build --platform linux/amd64 --progress plain -f emacs-native/Dockerfile -t wwarner/emacs-native:latest-amd64 ./emacs-native
-
-emacs-native-arm64:
-	docker build --platform linux/arm64 --progress plain -f emacs-native/Dockerfile -t wwarner/emacs-native:latest-arm64 ./emacs-native
-
-emacs-gopy-amd64:
-	docker build --platform linux/amd64 --progress plain -f emacs-gopy/Dockerfile -t wwarner/emacs-gopy:latest-amd64 ./emacs-gopy
-
-emacs-gopy-arm64:
-	docker build --platform linux/arm64 --progress plain -f emacs-gopy/Dockerfile -t wwarner/emacs-gopy:latest-arm64 ./emacs-gopy
-
-build: emacs-native-amd64 emacs-native-arm64 emacs-gopy-amd64 emacs-gopy-arm64
-
-push: build
-	docker push wwarner/emacs-native:latest-amd64
-	docker push wwarner/emacs-native:latest-arm64
-	docker push wwarner/emacs-gopy:latest-amd64
-	docker push wwarner/emacs-gopy:latest-arm64
-
-manifest: push
-	docker pull wwarner/emacs-native:latest-arm64
-	docker pull wwarner/emacs-native:latest-amd64
-	docker manifest create wwarner/emacs-native:latest \
-	       --amend wwarner/emacs-native:latest-arm64 \
-               --amend wwarner/emacs-native:latest-amd64
-	docker manifest push wwarner/emacs-native:latest
-	docker pull wwarner/emacs-gopy:latest-arm64
-	docker pull wwarner/emacs-gopy:latest-amd64
-	docker manifest create wwarner/emacs-gopy:latest \
-	       --amend wwarner/emacs-gopy:latest-arm64 \
-               --amend wwarner/emacs-gopy:latest-amd64
-	docker manifest push wwarner/emacs-gopy:latest
+manifests:
+	docker pull wwarner/emacs-native:${FP}-arm64
+	docker pull wwarner/emacs-native:${FP}-amd64
+	docker manifest create wwarner/emacs-native:${FP} \
+	       --amend wwarner/emacs-native:${FP}-arm64 \
+               --amend wwarner/emacs-native:${FP}-amd64
+	docker manifest push wwarner/emacs-native:${FP}
+	docker pull wwarner/emacs-gopy:${FP}-arm64
+	docker pull wwarner/emacs-gopy:${FP}-amd64
+	docker manifest create wwarner/emacs-gopy:${FP} \
+	       --amend wwarner/emacs-gopy:${FP}-arm64 \
+               --amend wwarner/emacs-gopy:${FP}-amd64
+	docker manifest push wwarner/emacs-gopy:${FP}
