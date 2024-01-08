@@ -49,7 +49,9 @@
  '(tooltip-mode nil)
  '(typescript-indent-level 2)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((use-package) (comp))))
+ '(warning-suppress-types '((use-package) (comp)))
+ ;; '(use-package-compute-statistics t)
+ )
 (menu-bar-mode -1)
 (savehist-mode t)
 (delete-selection-mode 1)
@@ -159,7 +161,9 @@
      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
      (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-     (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
+  (mapc #'treesit-install-language-grammar
+	(cl-remove-if '(lambda (v) (file-exists-p (concat "~/.emacs.d/tree-sitter/libtree-sitter-" (symbol-name v) ".so")))
+		      (mapcar #'car treesit-language-source-alist))))
 ;; (use-package ts-fold
 ;;   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold"))
 
