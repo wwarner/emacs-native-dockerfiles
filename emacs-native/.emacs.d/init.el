@@ -77,6 +77,7 @@
 (use-package vterm
   :init (setq vterm-always-compile-module t)
   (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
+(use-package multi-vterm)
 
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t))
