@@ -63,7 +63,6 @@ ENV LANGUAGE=C.UTF-8
 WORKDIR /root
 
 COPY .emacs.d .emacs.d
-RUN mkdir .emacs.d/data
-RUN .emacs.d/postinstall.sh
+RUN emacs -Q --script ".emacs.d/init.el"
 
 CMD ["emacs"]
