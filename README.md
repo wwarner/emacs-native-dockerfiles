@@ -28,6 +28,8 @@ Or build it locally
 	  -v$HOME/.aws:/root/.aws \
 	  emacs-gopy
 
+<img width=750px src="./examples/go/demo.gif" />
+
 ## Native Compliation
 
 Emacs lisp can be compiled to native machine code when built
@@ -115,6 +117,10 @@ inside the container.
 In addition to all of that, git needs your ssh keys for all
 communication with git forges (Github, Gitlab), so those need to be
 mounted to /root/.ssh as well.
+
+## Source
+
+https://github.com/wwarner/emacs-native-dockerfiles
 
 ## References
 
