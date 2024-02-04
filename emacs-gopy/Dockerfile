@@ -1,4 +1,5 @@
-FROM wwarner/emacs-native
+ARG BASE
+FROM wwarner/emacs-native:${BASE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
