@@ -28,6 +28,8 @@ Or build it locally
 	  -v$HOME/.aws:/root/.aws \
 	  emacs-gopy
 
+## Example Session
+
 <img width=750px src="./examples/go/demo.gif" />
 
 ## Native Compliation
