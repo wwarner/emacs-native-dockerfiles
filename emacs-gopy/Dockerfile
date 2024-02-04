@@ -4,10 +4,10 @@ FROM wwarner/emacs-native:${BASE}
 ENV DEBIAN_FRONTEND=noninteractive
 
 COPY --from=golang:1.21-bookworm /usr/local/go/ /usr/local/go/
-ENV PATH=/usr/local/go/bin:$PATH
+ENV PATH=/root/go/bin:/usr/local/go/bin:$PATH
 
-RUN apt update && \
-    apt install -y \
+RUN apt-get update && \
+    apt-get install -y \
     python3 \
     python3-dev \
     python3-pip \

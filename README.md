@@ -11,7 +11,7 @@ Run directly from the image at dockerhub:
 
 	docker run -it --rm --name emacs \
 	  -v$HOME/src:/root/src \
-	  -v$HOME/.gitconfig:/root/.gitconfig \
+	  -v$HOME/.gitconfig:/etc/gitconfig \
 	  -v$HOME/.ssh:/root/.ssh \
 	  -v$HOME/.aws:/root/.aws \
 	  wwarner/emacs-gopy:latest
@@ -46,7 +46,7 @@ its libjansson dependencies.
 I currently work in Go and Python, and I've installed the dependencies
 needed for syntax highlighting, auto-completion and code
 formatting. For Go, `gopls`, `gofumpt` and `dlv` are installed where
-emacs can find them. For Python, `pyright` is installed..
+emacs can find them. For Python, `pyright` is installed.
 
 ## No X11
 
@@ -61,8 +61,12 @@ drop that configuration flag.
 ## 24bit color & unicode
 
 24 bit color allows modern themes like zenburn and solarized to work
-well. In addition, unicode is configured correctly and `vterm` is
-compiled and installed.
+well. Unicode is configured correctly.
+
+## Fast Start
+
+All elisp is loaded and compiled in the build image, so that emacs
+starts very quickly.
 
 ### Frequently Used Keys
 
@@ -75,19 +79,36 @@ compiled and installed.
 * Coment code with `C-c C-c`, and uncomment with `C-c C-v`
 * Collapse code block with `C-c <down>`; repeat to show it again
 
-Remarks:
+### Git Configuration
 
-* Mount ~/.gitconfig to share your github email address and possibly
-  to share git repositories on the host with the guest. On Mac, with
-  Docker for Desktop, virtualization is set up such that user ids are
-  the same in the host and the guest and magit works without adding
-  directories to .gitconfig. However, on linux (or Mac using Colima)
-  the guest user ids are different, and git will not open the
-  repository unless the directory in the guest is added to .gitconfig.
+This docker image is designed to provide an emacs development
+environment that works equally well on Mac and Linux
+machines. However, it works a bit better on Macs because Docker for
+Desktop is designed to support containerized development while docker
+on Linux is not. If you run this emacs container on Linux (as I do),
+you will get a "dubious ownership" error from git unless you configure
+git to recognize the mounted directories as safe with:
 
-* Build and push with [Docker BuildKit](https://docs.docker.com/engine/reference/commandline/buildx_build/).
-  * It looks like this, but runs very very slowly when building the foreign arch.
-  `docker buildx build --platform linux/amd64,linux/arm64/v8 --push -t emacs-native:latest --progress plain .`
+    git config --global --add safe.directory /container/path/to/workspace
+
+You can also edit ~/.gitconfig and declare all directories safe
+
+    [safe]
+    	directory = *
+
+For commiting to github, you'll need a user stanza as well, so that
+your commits can be mapped to your github email.
+
+    [user]
+		name = wenjie
+    	email = 9873498+wenjie9489@users.noreply.github.com
+
+Either way, mount ~/.gitconfig to /etc/gitconfig to allow git to work
+inside the container.
+
+In addition to all of that, git needs your ssh keys for all
+communication with git forges (Github, Gitlab), so those need to be
+mounted to /root/.ssh as well.
 
 ## References
 

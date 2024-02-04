@@ -1,6 +1,11 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
+(eval-when-compile
+  (require 'use-package))
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+
 (global-set-key (kbd "M-P") 'previous-buffer)
 (global-set-key (kbd "M-N") 'next-buffer)
 (global-set-key (kbd "M-o") 'other-window)
@@ -18,35 +23,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ag-reuse-buffers t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(inhibit-startup-screen t)
- '(markdown-command "markdown")
- '(package-selected-packages
-   '(k8s-mode origami w3m folding
-		 clipetty tramp-container ag use-package
-		 project prettier prettier-js dockerfile-mode
-		 glsl-mode docker docker-compose-mode
-		 company string-inflection projectile json-mode
-		 uuidgen tide rainbow-delimiters iedit))
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
- '(shr-inhibit-images nil)
  '(tooltip-mode nil)
- '(typescript-indent-level 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package) (comp)))
  '(use-package-compute-statistics t))
 (menu-bar-mode -1)
 (savehist-mode t)
 (delete-selection-mode 1)
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; Basic things common to all programming modes
 ;;   show line numbers
@@ -67,24 +54,31 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;; use clipetty mode to copy to paste buffer!
-(global-set-key (kbd "M-w") 'clipetty-kill-ring-save)
+;; these packages need no additional configuration
+(use-package iedit)
+(use-package magit)
+(use-package fzf)
+(use-package solarized-theme)
+(use-package zenburn-theme)
+(use-package lsp-mode)
+(use-package dockerfile-mode)
+(use-package json-mode)
+(use-package company)
+(use-package uuidgen)
+(use-package rainbow-delimiters)
 
-(use-package magit :ensure t)
+;; use clipetty mode to copy to paste buffer!
+(use-package clipetty
+  :config (global-set-key (kbd "M-w") 'clipetty-kill-ring-save))
+
 (use-package treemacs
-  :ensure t
   :config (treemacs-do-add-project-to-workspace "/root" "/root"))
+
 (use-package vterm
-  :ensure t
   :init (setq vterm-always-compile-module t)
   (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
 
-(use-package fzf :ensure t)
-
-(use-package solarized-theme :ensure t)
-(use-package zenburn-theme :ensure t)
 (use-package soft-charcoal-theme
-  :ensure t
   :config (load-theme 'soft-charcoal t))
 
 ;; Install straight.el
@@ -102,7 +96,6 @@
   (load bootstrap-file nil 'nomessage))
 
 (use-package yaml-pro
-  :ensure t
   :straight (yaml-pro :type git :host github :repo "zkry/yaml-pro")
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-pro-mode))
@@ -115,7 +108,6 @@
   (add-hook 'yaml-pro-mode-hook (lambda () (setq indent-tabs-mode nil))))
 
 (use-package rg
-  :ensure t
   :straight (rg :type git :host github :repo "dajva/rg.el")
   :config
   (when (file-exists-p "~/.rgignore") (setq rg-command-line-flags '("--ignore-file ~/.rgignore")))
@@ -130,7 +122,6 @@
   (add-hook 'rg-mode-hook 'wgrep-rg-setup))
 
 (use-package tree-sitter
-  :ensure t
   :config (setq treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")
@@ -150,10 +141,6 @@
   (mapc #'treesit-install-language-grammar
 	(cl-remove-if '(lambda (v) (file-exists-p (concat "~/.emacs.d/tree-sitter/libtree-sitter-" (symbol-name v) ".so")))
 		      (mapcar #'car treesit-language-source-alist))))
-;; (use-package ts-fold
-;;   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold"))
-
-(use-package lsp-mode :ensure t)
 
 ;; derived images can put their elisp in this init directory and it
 ;; will be picked up in alphabetical order
