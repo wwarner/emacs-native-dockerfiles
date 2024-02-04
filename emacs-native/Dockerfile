@@ -60,6 +60,9 @@ ENV LC_ALL=C.utf8
 ENV LANG=C.UTF-8
 ENV LANGUAGE=C.UTF-8
 
+# vterm behaves better with this setting
+ENV SHELL=bash
+
 WORKDIR /root
 
 COPY .emacs.d .emacs.d
