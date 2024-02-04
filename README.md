@@ -58,7 +58,7 @@ fun without graphics. The compilation step in this build is also much
 much faster `--without-x11`. If you want your graphics back, then just
 drop that configuration flag.
 
-## 24bit color & unicode
+## 24bit Color & Unicode
 
 24 bit color allows modern themes like zenburn and solarized to work
 well. Unicode is configured correctly.
@@ -75,9 +75,15 @@ starts very quickly.
 * Kill buffer with `M-K`
 * Delete window with `M-0`
 * Edit all occurances of the current token in the buffer with `C-c ;` (iedit)
-* Fuzzy find files with `M-Z` (fzf)
-* Coment code with `C-c C-c`, and uncomment with `C-c C-v`
+* Comment code with `M-;`; repeat to uncomment
 * Collapse code block with `C-c <down>`; repeat to show it again
+
+### Wgrep
+
+Search and replace across many files with
+[wgrep](https://www.reddit.com/r/emacs/comments/u6yibf/if_you_have_never_used_wgrep_with_rgel_to_rename/). Find
+and edit file names with
+[wdired](https://www.masteringemacs.org/article/wdired-editable-dired-buffers).
 
 ### Git Configuration
 

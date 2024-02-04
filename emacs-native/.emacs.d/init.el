@@ -6,17 +6,24 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
+;; Somehow this key binding is getting dropped in my build. It's
+;; present in emacs-plus and others
+(global-set-key (kbd "M-%") 'query-replace-regexp)
+
+;; I rely on these because I like to work on a laptop screen, so I
+;; need an efficient way to cycle through buffers
 (global-set-key (kbd "M-P") 'previous-buffer)
 (global-set-key (kbd "M-N") 'next-buffer)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-K") 'kill-this-buffer)
 (global-set-key (kbd "M-0") 'delete-window)
 
+;; Scroll up and down without moving the cursor
 (setq scroll-preserve-screen-position 1)
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
-(global-set-key (kbd "M-Z") 'fzf)
-(setq native-comp-deferred-compilation t)
+
+(setq native-comp-jit-compilation t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -35,22 +42,6 @@
 (savehist-mode t)
 (delete-selection-mode 1)
 
-;; Basic things common to all programming modes
-;;   show line numbers
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-
-;;   comment and uncooment shortcuts
-(add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c C-c")
- 'comment-region)))
-(add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
-						    'uncomment-region)))
-;;   turn on iedit at the cursor
-(add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c ;")
-						    'iedit-mode)))
-;;   toggle visibility of the current code block
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-(add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c <down>") 'hs-toggle-hiding)))
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -67,12 +58,15 @@
 (use-package uuidgen)
 (use-package rainbow-delimiters)
 
-;; use clipetty mode to copy to paste buffer!
+;; clipetty copies to the system paste buffer
 (use-package clipetty
   :config (global-set-key (kbd "M-w") 'clipetty-kill-ring-save))
 
+;; brings up file navigation at startup
 (use-package treemacs
-  :config (treemacs-do-add-project-to-workspace "/root" "/root"))
+  :config
+  (treemacs-do-add-project-to-workspace "/root" "/root")
+  (add-hook 'emacs-startup-hook 'treemacs))
 
 (use-package vterm
   :init (setq vterm-always-compile-module t)
@@ -88,6 +82,15 @@
   :config
   (setq lsp-diagnostics-provider nil)
   :after flycheck)
+
+(add-hook 'prog-mode-hook
+	  (lambda ()
+	    (display-line-numbers-mode)
+	    (local-set-key (kbd "C-c C-c") #'comment-region)
+	    (local-set-key (kbd "C-c C-v") #'uncomment-region)
+	    (local-set-key (kbd "C-c ;") #'iedit-mode)
+	    (hs-minor-mode)
+	    (local-set-key (kbd "C-c <down>") #'hs-toggle-hiding)))
 
 ;; Install straight.el
 (defvar bootstrap-version)
@@ -122,12 +125,12 @@
   (setq rg-custom-type-aliases nil
 	rg-hide-command nil
 	rg-ignore-ripgreprc nil)
+  (autoload 'wgrep-rg-setup "wgrep-rg")
+  (add-hook 'rg-mode-hook 'wgrep-rg-setup)
   ;; gotta be able to cycle through buffers even in rg mode
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-o"))))
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-P"))))
-  (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N"))))
-  (autoload 'wgrep-rg-setup "wgrep-rg")
-  (add-hook 'rg-mode-hook 'wgrep-rg-setup))
+  (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N")))))
 
 (use-package tree-sitter
   :config (setq treesit-language-source-alist
@@ -154,4 +157,3 @@
 ;; will be picked up in alphabetical order
 (mapc 'load (file-expand-wildcards "~/.emacs.d/init.d/*.el"))
 
-(add-hook 'emacs-startup-hook 'treemacs)
