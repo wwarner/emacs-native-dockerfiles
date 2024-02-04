@@ -34,7 +34,9 @@ RUN apt-get update -y && \
     w3m \
     libtree-sitter-dev \
     cargo \
-    zlib1g-dev
+    zlib1g-dev \
+    libvterm-dev \
+    cmake
 
 # RUN git config --global user.email "$EMAIL"
 

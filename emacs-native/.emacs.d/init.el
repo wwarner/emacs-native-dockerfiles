@@ -51,13 +51,13 @@
  '(inhibit-startup-screen t)
  '(markdown-command "markdown")
  '(package-selected-packages
-   '(tree-sitter tree-sitter-langs k8s-mode origami w3m vterm folding
-		 kubernetes clipetty tramp-container ag use-package
+   '(tree-sitter tree-sitter-langs k8s-mode origami w3m folding
+		 clipetty tramp-container ag use-package
 		 project prettier prettier-js dockerfile-mode
-		 glsl-mode docker dap-mode docker-compose-mode lsp-mode fzf
-		 company string-inflection projectile json-mode lsp-ui
-		 uuidgen tide deadgrep rainbow-delimiters
-		 zenburn-theme solarized-theme magit iedit))
+		 glsl-mode docker docker-compose-mode
+		 company string-inflection projectile json-mode
+		 uuidgen tide rainbow-delimiters
+		 zenburn-theme solarized-theme iedit))
  '(rg-command-line-flags '("--ignore-file ~/.rgignore"))
  '(rg-custom-type-aliases nil)
  '(rg-hide-command nil)
@@ -94,15 +94,23 @@
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'prog-mode-hook (lambda () (local-set-key (kbd "C-c <down>") 'hs-toggle-hiding)))
 
-(use-package lsp-mode
-  :ensure t
-  :commands lsp-register-client)
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 ;; use clipetty mode to copy to paste buffer!
 (global-set-key (kbd "M-w") 'clipetty-kill-ring-save)
+
+(use-package magit :ensure t)
+(use-package treemacs
+  :ensure t
+  :config (treemacs-do-add-project-to-workspace "/root" "/root"))
+(use-package vterm
+  :ensure t
+  :init (setq vterm-always-compile-module t)
+  (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
+(use-package fzf
+  :ensure t
+  :init (setq fzf/args "-x --color bw --print-query --margin=1,0 --no-hscroll --no-unicode"))
 
 ;; Install straight.el
 (defvar bootstrap-version)
@@ -184,20 +192,6 @@
 (add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
 							'uncomment-region)))
 (add-hook 'yaml-pro-mode-hook (lambda () (setq indent-tabs-mode nil)))
-
-(defun fetch-helm-resources ()
-  "Calls benthos/scripts/resources.sh with highlighted region, returns the helm_upgrade command that will match what is currently running in prod"
-  (interactive)
-  (let ((resources
-	(shell-command-to-string
-	 (concat
-	  (concat project-root "/scripts/kube/resources.sh")
-	  " "
-	  (buffer-substring (region-beginning) (region-end))
-	  ))))
-    (message resources)
-    (beginning-of-line)
-    (insert (concat "# " resources))))
 
 ;; Company mode
 (setq company-idle-delay 0)

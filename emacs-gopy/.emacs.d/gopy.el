@@ -3,13 +3,13 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
   (add-hook 'go-mode-hook #'lsp-deferred)
-  (add-hook 'go-mode-hook #'yas-minor-mode)
   (defun lsp-go-install-save-hooks ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
   (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
  (gofmt-command "gofumpt")
  (lsp-go-gopls-server-path "/go/bin/gopls"))
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 (use-package lsp-mode
   :ensure t
@@ -17,7 +17,6 @@
   :config
   (lsp-register-custom-settings
    '(("gopls.staticcheck" t t))))
-(add-hook 'before-save-hook 'gofmt-before-save)
 
 (use-package go-dlv :ensure t)
 (use-package company-go :ensure t)
@@ -30,9 +29,8 @@
 
 (use-package lsp-pyright
   :ensure t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))
+  :init
+  (add-hook 'python-mode-hook #'lsp-deferred))
 
 (setq major-mode-remap-alist
       '((python-mode . python-ts-mode)))
