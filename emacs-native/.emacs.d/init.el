@@ -82,6 +82,13 @@
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t))
 
+(use-package flycheck
+  :config (flycheck-display-errors-delay 0.2))
+(use-package lsp-ui
+  :config
+  (setq lsp-diagnostics-provider nil)
+  :after flycheck)
+
 ;; Install straight.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
