@@ -163,8 +163,14 @@
 ;; (use-package ts-fold
 ;;   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold"))
 
+(use-package lsp-mode :ensure t)
+
 ;; Company mode
 (setq company-idle-delay 0)
 (setq company-minimum-prefix-length 1)
+
+;; derived images can put their elisp in this init directory and it
+;; will be picked up in alphabetical order
+(mapc 'load (file-expand-wildcards "~/.emacs.d/init.d/*.el"))
 
 (add-hook 'emacs-startup-hook 'treemacs)
