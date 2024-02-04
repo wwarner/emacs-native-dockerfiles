@@ -91,9 +91,13 @@
   :ensure t
   :init (setq vterm-always-compile-module t)
   (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
-(use-package fzf
-  :ensure t
-  :init (setq fzf/args "-x --color bw --print-query --margin=1,0 --no-hscroll --no-unicode"))
+
+(use-package fzf :ensure t)
+
+(use-package solarized-theme :ensure t)
+(use-package zenburn-theme :ensure t)
+(use-package soft-charcoal-theme :ensure t)
+(load-theme 'soft-charcoal t)
 
 ;; Install straight.el
 (defvar bootstrap-version)
@@ -137,7 +141,8 @@
   (autoload 'wgrep-rg-setup "wgrep-rg")
   (add-hook 'rg-mode-hook 'wgrep-rg-setup))
 
-(use-package tree-sitter :ensure t
+(use-package tree-sitter
+  :ensure t
   :config (setq treesit-language-source-alist
    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
      (cmake "https://github.com/uyha/tree-sitter-cmake")

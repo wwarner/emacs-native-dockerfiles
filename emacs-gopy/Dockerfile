@@ -21,7 +21,6 @@ ENV PATH="$VENVDIR/bin:$PATH"
 RUN pip install pyright
 
 COPY .emacs.d .emacs.d
-RUN echo '(load-file ".emacs.d/gopy.el")' >> .emacs.d/init.el
-RUN .emacs.d/postinstall.sh
+RUN .emacs.d/gopypostinstall.sh
 
 CMD ["emacs"]
