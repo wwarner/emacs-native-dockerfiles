@@ -4,6 +4,7 @@ FROM wwarner/emacs-native:${BASE}
 ENV DEBIAN_FRONTEND=noninteractive
 
 COPY --from=golang:1.21-bookworm /usr/local/go/ /usr/local/go/
+ENV PATH=/usr/local/go/bin:$PATH
 
 RUN apt update && \
     apt install -y \
