@@ -11,18 +11,6 @@
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
 (global-set-key (kbd "M-Z") 'fzf)
-(setq switch-to-prev-buffer-skip
-       (lambda (win buf bok)
-     (let ( (b (buffer-name buf)) )
-       (or (member b '("*Messages*"
-               "*Apropos*"
-               "*Warnings*"
-               "*lsp-log*"
-               "*Completions*"
-               "*Backtrace*"))
-           (string-match-p "^magit-process" b)
-           (string-match-p "^\*nrepl-server " b)))))
-(setq switch-to-next-buffer-skip switch-to-prev-buffer-skip)
 (setq native-comp-deferred-compilation t)
 
 (custom-set-variables
@@ -41,8 +29,6 @@
 		 glsl-mode docker docker-compose-mode
 		 company string-inflection projectile json-mode
 		 uuidgen tide rainbow-delimiters iedit))
- '(safe-local-variable-values
-   '((project-root . "~/mm/github.com/MediaMath")))
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(shr-inhibit-images nil)
@@ -50,8 +36,7 @@
  '(typescript-indent-level 2)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((use-package) (comp)))
- ;; '(use-package-compute-statistics t)
- )
+ '(use-package-compute-statistics t))
 (menu-bar-mode -1)
 (savehist-mode t)
 (delete-selection-mode 1)
@@ -98,8 +83,9 @@
 
 (use-package solarized-theme :ensure t)
 (use-package zenburn-theme :ensure t)
-(use-package soft-charcoal-theme :ensure t)
-(load-theme 'soft-charcoal t)
+(use-package soft-charcoal-theme
+  :ensure t
+  :config (load-theme 'soft-charcoal t))
 
 ;; Install straight.el
 (defvar bootstrap-version)
@@ -168,10 +154,6 @@
 ;;   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold"))
 
 (use-package lsp-mode :ensure t)
-
-;; Company mode
-(setq company-idle-delay 0)
-(setq company-minimum-prefix-length 1)
 
 ;; derived images can put their elisp in this init directory and it
 ;; will be picked up in alphabetical order
