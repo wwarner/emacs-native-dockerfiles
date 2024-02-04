@@ -10,6 +10,7 @@
   (setq gofmt-command "gofumpt")
   (lsp-register-custom-settings
    '(("gopls.staticcheck" t t))))
+(use-package gotest :ensure t)
 (use-package go-dlv :ensure t)
 (use-package company-go :ensure t)
 

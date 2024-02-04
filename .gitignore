@@ -2,5 +2,3 @@
 *~
 !*/.emacs.d/init.el
 !*/.emacs.d/init.d
-!*/.emacs.d/gopy.el
-!*/.emacs.d/postinstall.sh
