@@ -1,7 +1,4 @@
-FROM golang:1.21-bookworm as emacs-src
-
-WORKDIR /opt
-RUN git clone --depth 1 --branch emacs-29 https://git.savannah.gnu.org/git/emacs.git
+FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
@@ -36,7 +33,12 @@ RUN apt-get update -y && \
     cargo \
     zlib1g-dev \
     libvterm-dev \
-    cmake
+    cmake \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+RUN git clone --depth 1 --branch emacs-29 https://git.savannah.gnu.org/git/emacs.git
 
 ENV CC="gcc-12"
 
@@ -50,17 +52,18 @@ RUN ./autogen.sh \
 
 RUN make && make install
 
-WORKDIR /root
-
-COPY .emacs.d .emacs.d
-RUN mkdir .emacs.d/data
-RUN .emacs.d/postinstall.sh
-
+# configure 24 bit color and unicode
 COPY xterm-24bit.terminfo /tmp/xterm-24bit.terminfo
 RUN /usr/bin/tic -x -o ~/.terminfo /tmp/xterm-24bit.terminfo
 ENV TERM=xterm-24bit
 ENV LC_ALL=C.utf8
 ENV LANG=C.UTF-8
 ENV LANGUAGE=C.UTF-8
+
+WORKDIR /root
+
+COPY .emacs.d .emacs.d
+RUN mkdir .emacs.d/data
+RUN .emacs.d/postinstall.sh
 
 CMD ["emacs"]
