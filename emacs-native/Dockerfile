@@ -1,3 +1,6 @@
+# Copyright 2024 William Warner
+# SPDX-License-Identifier: GPL-3.0-only
+
 FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive

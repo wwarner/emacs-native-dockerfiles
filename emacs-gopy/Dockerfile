@@ -1,3 +1,6 @@
+# Copyright 2024 William Warner
+# SPDX-License-Identifier: GPL-3.0-only
+
 ARG BASE
 FROM wwarner/emacs-native:${BASE}
 

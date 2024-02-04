@@ -1,3 +1,6 @@
+;; Copyright 2024 William Warner
+;; SPDX-License-Identifier: GPL-3.0-only
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
