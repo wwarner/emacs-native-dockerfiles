@@ -38,10 +38,12 @@ manifests:
 	       --amend wwarner/emacs-gopy:${FP}-arm64 \
                --amend wwarner/emacs-gopy:${FP}-x86_64
 	docker manifest push wwarner/emacs-gopy:${FP}
+	docker manifest rm wwarner/emacs-native:latest
 	docker manifest create wwarner/emacs-native:latest \
 	       --amend wwarner/emacs-native:${FP}-arm64 \
                --amend wwarner/emacs-native:${FP}-x86_64
 	docker manifest push wwarner/emacs-native:latest
+	docker manifest rm wwarner/emacs-gopy:latest
 	docker manifest create wwarner/emacs-gopy:latest \
 	       --amend wwarner/emacs-gopy:${FP}-arm64 \
                --amend wwarner/emacs-gopy:${FP}-x86_64
