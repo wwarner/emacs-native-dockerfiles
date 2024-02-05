@@ -55,6 +55,10 @@ RUN ./autogen.sh \
 
 RUN make && make install
 
+WORKDIR /root
+
+RUN /bin/rm -rf /opt/emacs
+
 # configure 24 bit color and unicode
 COPY xterm-24bit.terminfo /tmp/xterm-24bit.terminfo
 RUN /usr/bin/tic -x -o ~/.terminfo /tmp/xterm-24bit.terminfo
