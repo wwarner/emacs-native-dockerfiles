@@ -11,4 +11,4 @@ run: clean build
 	./run.sh
 
 clean:
-	rm server/server loader/loader
+	rm -f server/server loader/loader

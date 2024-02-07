@@ -67,6 +67,20 @@ func StatusHandler(s *storage) http.HandlerFunc {
 }
 
 const (
+	ProfilingDisable = iota
+	// Enables at 100% sample rate
+	ProfilingEnable
+)
+
+func ProfilingHandler(setRate func(int), token string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setRate(ProfilingEnable)
+		defer setRate(ProfilingDisable)
+		pprof.Handler(token).ServeHTTP(w, r)
+	}
+}
+
+const (
 	point = '■'
 	tic   = '|'
 	axis  = '-'
@@ -145,6 +159,10 @@ func Heartbeat(cancel context.Context, _range int) {
 	}
 }
 
+func setMutextProfileFraction(i int) {
+	runtime.SetMutexProfileFraction(i)
+}
+
 func main() {
 	s := newStorage()
 	mux := http.NewServeMux()
@@ -158,11 +176,8 @@ func main() {
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	runtime.SetMutexProfileFraction(100)
-	mux.Handle("/debug/pprof/mutex", pprof.Handler("mutex"))
-
-	runtime.SetBlockProfileRate(100)
-	mux.Handle("/debug/pprof/block", pprof.Handler("block"))
+	mux.HandleFunc("/debug/pprof/mutex", ProfilingHandler(setMutextProfileFraction, "mutex"))
+	mux.HandleFunc("/debug/pprof/block", ProfilingHandler(runtime.SetBlockProfileRate, "block"))
 
 	listener, err := net.Listen("tcp", ":80")
 	if err != nil {
