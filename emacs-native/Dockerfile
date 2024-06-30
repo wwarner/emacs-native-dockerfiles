@@ -41,7 +41,7 @@ RUN apt-get update -y && \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-RUN git clone --depth 1 --branch emacs-29 https://git.savannah.gnu.org/git/emacs.git
+RUN git clone --depth 1 --branch emacs-29 git://git.sv.gnu.org/emacs.git
 
 ENV CC="gcc-12"
 
