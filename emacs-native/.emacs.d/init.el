@@ -38,9 +38,10 @@
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(tooltip-mode nil)
+ '(tsc-dyn-get-from '(:compilation))
+ '(use-package-compute-statistics t)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((use-package) (comp)))
- '(use-package-compute-statistics t))
+ '(warning-suppress-types '((use-package) (use-package) (comp))))
 (menu-bar-mode -1)
 (savehist-mode t)
 (delete-selection-mode 1)
@@ -54,16 +55,18 @@
 (use-package fzf)
 (use-package solarized-theme)
 (use-package zenburn-theme)
-(use-package lsp-mode)
 (use-package dockerfile-mode)
 (use-package json-mode)
 (use-package company)
 (use-package uuidgen)
 (use-package rainbow-delimiters)
+(use-package soft-charcoal-theme)
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
   :config (global-set-key (kbd "M-w") 'clipetty-kill-ring-save))
+(use-package lsp-mode
+  :init (setq lsp-modeline-diagnostics-enable t))
 
 ;; brings up file navigation at startup
 (use-package treemacs
@@ -76,8 +79,8 @@
   (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
 (use-package multi-vterm)
 
-(use-package soft-charcoal-theme
-  :config (load-theme 'soft-charcoal t))
+(use-package ef-themes
+  :config (load-theme 'ef-winter t))
 
 (use-package flycheck
   :config (flycheck-display-errors-delay 0.2))
@@ -85,13 +88,16 @@
   :config
   (setq lsp-diagnostics-provider nil)
   :after flycheck)
+(use-package lsp-treemacs
+  :after lsp-mode
+  :config  (setq lsp-treemacs-error-list-expand-depth 5)
+  :commands lsp-treemacs-errors-list)
 
 (add-hook 'prog-mode-hook
 	  (lambda ()
 	    (display-line-numbers-mode)
 	    (local-set-key (kbd "C-c C-c") #'comment-region)
 	    (local-set-key (kbd "C-c C-v") #'uncomment-region)
-	    (local-set-key (kbd "C-c ;") #'iedit-mode)
 	    (hs-minor-mode)
 	    (local-set-key (kbd "C-c <down>") #'hs-toggle-hiding)))
 
@@ -109,18 +115,6 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(use-package yaml-pro
-  :straight (yaml-pro :type git :host github :repo "zkry/yaml-pro")
-  :config
-  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-pro-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-pro-mode))
-  (add-hook 'yaml-pro-mode-hook #'display-line-numbers-mode)
-  (add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-c")
-							  'comment-region)))
-  (add-hook 'yaml-pro-mode-hook (lambda () (local-set-key (kbd "C-c C-v")
-							  'uncomment-region)))
-  (add-hook 'yaml-pro-mode-hook (lambda () (setq indent-tabs-mode nil))))
-
 (use-package rg
   :straight (rg :type git :host github :repo "dajva/rg.el")
   :config
@@ -134,27 +128,6 @@
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-o"))))
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-P"))))
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N")))))
-
-(use-package tree-sitter
-  :config (setq treesit-language-source-alist
-   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (cmake "https://github.com/uyha/tree-sitter-cmake")
-     (css "https://github.com/tree-sitter/tree-sitter-css")
-     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-     (go "https://github.com/tree-sitter/tree-sitter-go")
-     (html "https://github.com/tree-sitter/tree-sitter-html")
-     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     (make "https://github.com/alemuller/tree-sitter-make")
-     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-  (mapc #'treesit-install-language-grammar
-	(cl-remove-if '(lambda (v) (file-exists-p (concat "~/.emacs.d/tree-sitter/libtree-sitter-" (symbol-name v) ".so")))
-		      (mapcar #'car treesit-language-source-alist))))
 
 ;; derived images can put their elisp in this init directory and it
 ;; will be picked up in alphabetical order
