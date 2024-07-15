@@ -78,7 +78,7 @@ starts very quickly.
 * Cycle back and forth through buffers with `M-n` and `M-p`
 * Kill buffer with `M-K`
 * Delete window with `M-0`
-* Edit all occurances of the current token in the buffer with `C-c ;` (iedit)
+* Edit all occurances of the current token in the buffer with `C-;` (iedit)
 * Comment code with `M-;`; repeat to uncomment
 * Collapse code block with `C-c <down>`; repeat to show it again
 

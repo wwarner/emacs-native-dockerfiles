@@ -23,8 +23,8 @@
 
 ;; Scroll up and down without moving the cursor
 (setq scroll-preserve-screen-position 1)
-(global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))
-(global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
+(global-set-key (kbd "ESC <up>") (kbd "C-u 1 C-v"))
+(global-set-key (kbd "ESC <down>") (kbd "C-u 1 M-v"))
 
 (setq native-comp-jit-compilation t)
 
@@ -50,17 +50,18 @@
 (put 'downcase-region 'disabled nil)
 
 ;; these packages need no additional configuration
-(use-package iedit)
-(use-package magit)
-(use-package fzf)
-(use-package solarized-theme)
-(use-package zenburn-theme)
-(use-package dockerfile-mode)
-(use-package json-mode)
 (use-package company)
-(use-package uuidgen)
+(use-package dockerfile-mode)
+(use-package fzf)
+(use-package iedit)
+(use-package indent-tools)
+(use-package json-mode)
+(use-package magit)
 (use-package rainbow-delimiters)
 (use-package soft-charcoal-theme)
+(use-package solarized-theme)
+(use-package uuidgen)
+(use-package zenburn-theme)
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
@@ -92,6 +93,8 @@
   :after lsp-mode
   :config  (setq lsp-treemacs-error-list-expand-depth 5)
   :commands lsp-treemacs-errors-list)
+
+(add-hook 'yaml-mode-hook #'indent-tools-minor-mode)
 
 (add-hook 'prog-mode-hook
 	  (lambda ()
