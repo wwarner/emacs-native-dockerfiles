@@ -52,13 +52,13 @@
 ;; these packages need no additional configuration
 (use-package company)
 (use-package dockerfile-mode)
+(use-package ef-themes)
 (use-package fzf)
 (use-package iedit)
 (use-package indent-tools)
 (use-package json-mode)
 (use-package magit)
 (use-package rainbow-delimiters)
-(use-package soft-charcoal-theme)
 (use-package solarized-theme)
 (use-package uuidgen)
 (use-package zenburn-theme)
@@ -80,8 +80,10 @@
   (add-hook 'vterm-mode-hook (lambda () (setq show-trailing-whitespace nil))))
 (use-package multi-vterm)
 
-(use-package ef-themes
-  :config (load-theme 'ef-winter t))
+;; also like theme ef-dark
+(use-package soft-charcoal-theme
+  :config (load-theme 'soft-charcoal t)
+          (set-face-background 'mode-line "#555555"))
 
 (use-package flycheck
   :config (flycheck-display-errors-delay 0.2))
