@@ -118,6 +118,46 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(use-package treesit
+  :ensure nil
+  :config
+  (setq treesit-language-source-alist
+        '(
+	  (bash       . ("https://github.com/tree-sitter/tree-sitter-bash"))
+          (c          . ("https://github.com/tree-sitter/tree-sitter-c"))
+          (cmake      . ("https://github.com/uyha/tree-sitter-cmake"))
+          (cpp        . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+          (css        . ("https://github.com/tree-sitter/tree-sitter-css"))
+          (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile"))
+          (dot        . ("https://github.com/rydesun/tree-sitter-dot"))
+          (doxygen    . ("https://github.com/tree-sitter-grammars/tree-sitter-doxygen"))
+          (elisp      . ("https://github.com/Wilfred/tree-sitter-elisp"))
+          (gitcommit  . ("https://github.com/gbprod/tree-sitter-gitcommit"))
+          (go         . ("https://github.com/tree-sitter/tree-sitter-go"))
+          (gomod      . ("https://github.com/camdencheek/tree-sitter-go-mod"))
+          (gosum      . ("https://github.com/amaanq/tree-sitter-go-sum"))
+          (gowork     . ("https://github.com/omertuc/tree-sitter-go-work"))
+          (html       . ("https://github.com/tree-sitter/tree-sitter-html"))
+          (http       . ("https://github.com/rest-nvim/tree-sitter-http"))
+          (java       . ("https://github.com/tree-sitter/tree-sitter-java"))
+          (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+          (json       . ("https://github.com/tree-sitter/tree-sitter-json"))
+          (lua        . ("https://github.com/tree-sitter-grammars/tree-sitter-lua"))
+          (make       . ("https://github.com/tree-sitter-grammars/tree-sitter-make"))
+          (markdown   . ("https://github.com/tree-sitter-grammars/tree-sitter-markdown"))
+          (proto      . ("https://github.com/treywood/tree-sitter-proto"))
+          (python     . ("https://github.com/tree-sitter/tree-sitter-python"))
+          (rust       . ("https://github.com/tree-sitter/tree-sitter-rust"))
+          (sql        . ("https://github.com/derekstride/tree-sitter-sql"))
+          (toml       . ("https://github.com/tree-sitter/tree-sitter-toml"))
+          (tsx        . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+          (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+          (vue        . ("https://github.com/tree-sitter-grammars/tree-sitter-vue"))
+          (yaml       . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
+	  )
+	)
+  )
+
 (use-package rg
   :straight (rg :type git :host github :repo "dajva/rg.el")
   :config
