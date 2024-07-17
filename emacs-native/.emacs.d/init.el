@@ -53,7 +53,6 @@
 (use-package company)
 (use-package dockerfile-mode)
 (use-package ef-themes)
-(use-package fzf)
 (use-package iedit)
 (use-package indent-tools)
 (use-package json-mode)
@@ -62,6 +61,22 @@
 (use-package solarized-theme)
 (use-package uuidgen)
 (use-package zenburn-theme)
+
+(use-package fzf
+  :defer t
+  :config
+  (setq
+   fzf/args "-x --print-query --margin=1,0 --no-hscroll"
+   fzf/executable "fzf"
+   fzf/git-grep-args "-i --line-number %s"
+   fzf/grep-command "rg --no-heading -nH"
+   fzf/position-bottom t
+   fzf/window-height 15)
+  :bind  (
+	  ("C-x C-z f" . #'fzf)
+	  ("C-x C-z C-i f" . #'fzf-git)
+	  ("C-x C-z g" . #'fzf-grep)
+	  ("C-x C-z C-i g" . #'fzf-git-grep)))
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
@@ -84,17 +99,6 @@
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t)
           (set-face-background 'mode-line "#555555"))
-
-(use-package flycheck
-  :config (flycheck-display-errors-delay 0.2))
-(use-package lsp-ui
-  :config
-  (setq lsp-diagnostics-provider nil)
-  :after flycheck)
-(use-package lsp-treemacs
-  :after lsp-mode
-  :config  (setq lsp-treemacs-error-list-expand-depth 5)
-  :commands lsp-treemacs-errors-list)
 
 (add-hook 'yaml-mode-hook #'indent-tools-minor-mode)
 
