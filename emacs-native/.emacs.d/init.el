@@ -41,7 +41,8 @@
  '(tsc-dyn-get-from '(:compilation))
  '(use-package-compute-statistics t)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((use-package) (use-package) (comp))))
+ '(warning-suppress-types '((use-package) (use-package) (comp)))
+ '(wgrep-auto-save-buffer t))
 (menu-bar-mode -1)
 (savehist-mode t)
 (delete-selection-mode 1)
@@ -53,7 +54,6 @@
 (use-package company)
 (use-package dockerfile-mode)
 (use-package ef-themes)
-(use-package fzf)
 (use-package iedit)
 (use-package indent-tools)
 (use-package json-mode)
@@ -61,19 +61,34 @@
 (use-package rainbow-delimiters)
 (use-package solarized-theme)
 (use-package uuidgen)
+(use-package yasnippet)
 (use-package zenburn-theme)
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
   :config (global-set-key (kbd "M-w") 'clipetty-kill-ring-save))
-(use-package lsp-mode
-  :init (setq lsp-modeline-diagnostics-enable t))
 
 ;; brings up file navigation at startup
 (use-package treemacs
   :config
   (treemacs-do-add-project-to-workspace "/root" "/root")
   (add-hook 'emacs-startup-hook 'treemacs))
+
+(use-package fzf
+  :defer t
+  :config
+  (setq
+   fzf/args "-x --print-query --margin=1,0 --no-hscroll"
+   fzf/executable "fzf"
+   fzf/git-grep-args "-i --line-number %s"
+   fzf/grep-command "rg --no-heading -nH"
+   fzf/position-bottom t
+   fzf/window-height 15)
+  :bind  (
+	  ("C-c C-z g" . #'fzf-grep)
+	  ("C-c C-z C-i g" . #'fzf-git-grep)
+	  ("C-c C-z f" . #'fzf)
+	  ("C-c C-z C-i g" . #'fzf-git)))
 
 (use-package vterm
   :init (setq vterm-always-compile-module t)
@@ -84,17 +99,6 @@
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t)
           (set-face-background 'mode-line "#555555"))
-
-(use-package flycheck
-  :config (flycheck-display-errors-delay 0.2))
-(use-package lsp-ui
-  :config
-  (setq lsp-diagnostics-provider nil)
-  :after flycheck)
-(use-package lsp-treemacs
-  :after lsp-mode
-  :config  (setq lsp-treemacs-error-list-expand-depth 5)
-  :commands lsp-treemacs-errors-list)
 
 (add-hook 'yaml-mode-hook #'indent-tools-minor-mode)
 
@@ -177,4 +181,3 @@
 ;; derived images can put their elisp in this init directory and it
 ;; will be picked up in alphabetical order
 (mapc 'load (file-expand-wildcards "~/.emacs.d/init.d/*.el"))
-
