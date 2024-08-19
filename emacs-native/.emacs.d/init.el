@@ -57,12 +57,15 @@
 (use-package iedit)
 (use-package indent-tools)
 (use-package json-mode)
-(use-package magit)
 (use-package rainbow-delimiters)
 (use-package solarized-theme)
 (use-package uuidgen)
 (use-package yasnippet)
 (use-package zenburn-theme)
+
+(use-package magit
+  :init (shell-command "git config --global --add safe.directory \\*"))
+
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
