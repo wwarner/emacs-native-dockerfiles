@@ -23,8 +23,8 @@
 
 ;; Scroll up and down without moving the cursor
 (setq scroll-preserve-screen-position 1)
-(global-set-key (kbd "ESC <up>") (kbd "C-u 1 C-v"))
-(global-set-key (kbd "ESC <down>") (kbd "C-u 1 M-v"))
+(global-set-key (kbd "<M-up>") (kbd "C-u 1 C-v"))
+(global-set-key (kbd "<M-down>") (kbd "C-u 1 M-v"))
 
 (setq native-comp-jit-compilation t)
 
@@ -100,7 +100,9 @@
   :config (load-theme 'soft-charcoal t)
           (set-face-background 'mode-line "#555555"))
 
-(add-hook 'yaml-mode-hook #'indent-tools-minor-mode)
+(add-hook 'yaml-mode-hook (lambda ()
+	    (indent-tools-minor-mode)
+	    (display-line-numbers-mode)))
 
 (add-hook 'prog-mode-hook
 	  (lambda ()
