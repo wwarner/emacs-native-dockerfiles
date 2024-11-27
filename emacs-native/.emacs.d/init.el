@@ -81,8 +81,6 @@
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
   :config (global-set-key (kbd "M-w") 'clipetty-kill-ring-save))
-(use-package lsp-mode
-  :init (setq lsp-modeline-diagnostics-enable t))
 
 ;; brings up file navigation at startup
 (use-package treemacs

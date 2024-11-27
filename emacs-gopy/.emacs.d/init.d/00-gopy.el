@@ -5,7 +5,8 @@
   :ensure t
   :init
   (add-hook 'before-save-hook #'gofmt-before-save)
-  (add-hook 'go-mode-hook #'eglot-ensure)
+  (add-hook 'go-mode-hook 'company-mode)
+  (add-hook 'go-mode-hook 'eglot-ensure)
   (setq gofmt-command "gofumpt")
   (lsp-register-custom-settings
    '(("gopls.staticcheck" t t))))
