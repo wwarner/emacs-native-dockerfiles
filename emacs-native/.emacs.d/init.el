@@ -50,7 +50,6 @@
 (put 'downcase-region 'disabled nil)
 
 ;; these packages need no additional configuration
-(use-package company)
 (use-package dockerfile-mode)
 (use-package ef-themes)
 (use-package iedit)
@@ -62,6 +61,9 @@
 (use-package uuidgen)
 (use-package zenburn-theme)
 
+(use-package company
+  :config (global-company-mode 1))
+
 (use-package fzf
   :defer t
   :config
@@ -71,12 +73,7 @@
    fzf/git-grep-args "-i --line-number %s"
    fzf/grep-command "rg --no-heading -nH"
    fzf/position-bottom t
-   fzf/window-height 15)
-  :bind  (
-	  ("C-x C-z f" . #'fzf)
-	  ("C-x C-z C-i f" . #'fzf-git)
-	  ("C-x C-z g" . #'fzf-grep)
-	  ("C-x C-z C-i g" . #'fzf-git-grep)))
+   fzf/window-height 15))
 
 ;; clipetty copies to the system paste buffer
 (use-package clipetty
@@ -104,6 +101,7 @@
 
 (add-hook 'prog-mode-hook
 	  (lambda ()
+	    (eglot-ensure)
 	    (display-line-numbers-mode)
 	    (local-set-key (kbd "C-c C-c") #'comment-region)
 	    (local-set-key (kbd "C-c C-v") #'uncomment-region)
@@ -177,6 +175,10 @@
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-o"))))
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-P"))))
   (add-hook 'rg-mode-hook (lambda () (local-unset-key (kbd "M-N")))))
+
+(use-package dape
+  :ensure (dape :type git :host github :repo "svaante/dape")
+  :disabled t)
 
 ;; derived images can put their elisp in this init directory and it
 ;; will be picked up in alphabetical order
