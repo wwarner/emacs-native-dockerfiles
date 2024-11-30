@@ -1,9 +1,9 @@
 Dockerfiles for Emacs With Native Compilation
 =============================================
 
-Native Compilation, 24 bit color, LSP, Gopls, Pyright, Ripgrep, Fzf,
-Treemacs, HideShow and more. Eliminates trial and error. Runs the same
-everywhere!
+Native Compilation, 24 bit color, LSP, Eglot, Gopls, Pyright, Ripgrep,
+Fzf, Treemacs, HideShow and more. Eliminates trial and error. Runs the
+same everywhere!
 
 ## Installation
 
