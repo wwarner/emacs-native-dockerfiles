@@ -130,8 +130,7 @@ https://hub.docker.com/u/wwarner
 
 ## References
 
-[docker-emacs](https://github.com/Silex/docker-emacs) (not compiled
-with --native-comp or for `arm64` so decided to start fresh)
+[docker-emacs](https://github.com/Silex/docker-emacs)
 
 [EmacsPlus](https://github.com/d12frosted/homebrew-emacs-plus/blob/master/Formula/emacs-plus%4030.rb)
 
