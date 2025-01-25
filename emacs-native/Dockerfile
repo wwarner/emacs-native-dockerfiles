@@ -1,47 +1,47 @@
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 
-FROM debian:bookworm-slim
+FROM debian:bookworm-20250113-slim
+ARG EMACS_BRANCH
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && \
     apt-get install -y \
-    curl \
-    gnupg \
-    openssh-client \
-    wget \
-    git \
-    fzf \
-    ripgrep \
-    build-essential \
-    libssl-dev \
-    libffi-dev \
     apt-transport-https \
+    autoconf \
+    build-essential \
     ca-certificates \
+    cargo \
+    cmake \
     curl \
-    gnupg-agent \
-    software-properties-common \
+    fzf \
     gcc-12 \
-    libgccjit0 \
+    git \
+    gnupg \
+    gnupg-agent \
+    gnutls-bin \
+    libffi-dev \
     libgccjit-12-dev \
+    libgccjit0 \
+    libgnutls28-dev \
     libjansson4 \
     libjansson-dev \
-    libgnutls28-dev \
-    autoconf \
-    texinfo \
-    gnutls-bin \
     libncurses-dev \
-    w3m \
+    libssl-dev \
     libtree-sitter-dev \
-    cargo \
-    zlib1g-dev \
     libvterm-dev \
-    cmake \
+    openssh-client \
     pkg-config \
+    ripgrep \
+    software-properties-common \
+    texinfo \
+    w3m \
+    wget \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-RUN git clone --depth 1 --branch emacs-29 git://git.sv.gnu.org/emacs.git
+RUN git clone --depth 1 --branch emacs-${EMACS_BRANCH} git://git.sv.gnu.org/emacs.git
 
 ENV CC="gcc-12"
 

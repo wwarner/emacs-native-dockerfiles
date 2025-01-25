@@ -6,11 +6,12 @@ FROM wwarner/emacs-native:${BASE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-COPY --from=golang:1.21-bookworm /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.23.5-bookworm /usr/local/go/ /usr/local/go/
 ENV PATH=/root/go/bin:/usr/local/go/bin:$PATH
 
 RUN apt-get update && \
     apt-get install -y \
+    clangd \
     python3 \
     python3-dev \
     python3-pip \
@@ -18,9 +19,9 @@ RUN apt-get update && \
     python3-launchpadlib && \
     rm -rf /var/lib/apt/lists/*
 
-RUN go install github.com/go-delve/delve/cmd/dlv@v1.21.2
-RUN go install golang.org/x/tools/gopls@v0.14.2
-RUN go install mvdan.cc/gofumpt@v0.5.0
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.24.0
+RUN go install golang.org/x/tools/gopls@v0.16.2
+RUN go install mvdan.cc/gofumpt@v0.7.0
 ENV HOME /root
 WORKDIR /root
 
