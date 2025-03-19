@@ -95,9 +95,10 @@
   :config (load-theme 'soft-charcoal t)
           (set-face-background 'mode-line "#555555"))
 
-(add-hook 'yaml-mode-hook (lambda ()
-	    (indent-tools-minor-mode)
-	    (display-line-numbers-mode)))
+(use-package yaml-mode
+  :config (add-hook 'yaml-mode-hook (lambda ()
+				      (indent-tools-minor-mode)
+				      (display-line-numbers-mode))))
 
 (add-hook 'prog-mode-hook
 	  (lambda ()
