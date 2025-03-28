@@ -93,7 +93,8 @@
 ;; also like theme ef-dark
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t)
-          (set-face-background 'mode-line "#555555"))
+  (set-face-background 'mode-line "#555555")
+  (set-face-attribute 'eglot-highlight-symbol-face nil :underline t :foreground "#cccccc"))
 
 (add-hook 'yaml-mode-hook (lambda ()
 	    (indent-tools-minor-mode)
