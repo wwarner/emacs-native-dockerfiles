@@ -133,11 +133,11 @@ func makeBar(n, max int) string {
 	return string(barbuf)
 }
 
-func Heartbeat(cancel context.Context, _range int) {
+func Heartbeat(ctx context.Context, _range int) {
 	h := time.NewTicker(1000 * time.Millisecond)
 	for {
 		select {
-		case <-cancel.Done():
+		case <-ctx.Done():
 			return
 		case <-h.C:
 			resp, err := http.Get("http://localhost/status")
