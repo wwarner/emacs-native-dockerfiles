@@ -18,7 +18,7 @@
 (global-set-key (kbd "M-P") 'previous-buffer)
 (global-set-key (kbd "M-N") 'next-buffer)
 (global-set-key (kbd "M-o") 'other-window)
-(global-set-key (kbd "M-K") 'kill-this-buffer)
+(global-set-key (kbd "M-K") 'kill-current-buffer)
 (global-set-key (kbd "M-0") 'delete-window)
 
 ;; Scroll up and down without moving the cursor
@@ -50,10 +50,12 @@
 (put 'downcase-region 'disabled nil)
 
 ;; these packages need no additional configuration
+(use-package darcula-theme)
 (use-package dockerfile-mode)
 (use-package ef-themes)
 (use-package iedit)
 (use-package indent-tools)
+(use-package inkpot-theme)
 (use-package json-mode)
 (use-package magit)
 (use-package rainbow-delimiters)
@@ -93,8 +95,7 @@
 ;; also like theme ef-dark
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t)
-  (set-face-background 'mode-line "#555555")
-  (set-face-attribute 'eglot-highlight-symbol-face nil :underline t :foreground "#cccccc"))
+  (set-face-background 'mode-line "#555555"))
 
 (use-package yaml-mode
   :config (add-hook 'yaml-mode-hook (lambda ()
@@ -108,7 +109,10 @@
 	    (local-set-key (kbd "C-c C-c") #'comment-region)
 	    (local-set-key (kbd "C-c C-v") #'uncomment-region)
 	    (hs-minor-mode)
-	    (local-set-key (kbd "C-c <down>") #'hs-toggle-hiding)))
+	    (local-set-key (kbd "C-c <down>") #'hs-toggle-hiding)
+	    (set-face-attribute 'eglot-highlight-symbol-face nil
+                      :underline t
+		      :foreground "#bbbbbb")))
 
 ;; Install straight.el
 (defvar bootstrap-version)

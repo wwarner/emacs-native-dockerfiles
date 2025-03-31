@@ -11,13 +11,13 @@
 # now on an amd host
 # $ make push manifests
 
-EMACS_BRANCH=29.4
+EMACS_BRANCH=30.1
 FP=v${EMACS_BRANCH}-$(shell printf '%04d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
 ARCH=$(shell uname -m)
 BASE=${FP}-${ARCH}
 
 emacs-native:
-	docker build --progress plain --build-arg EMACS_BRANCH=29.4 -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
+	docker build --progress plain --build-arg EMACS_BRANCH=${EMACS_BRANCH} -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
 
 emacs-gopy: emacs-native
 	docker build --progress plain -f emacs-gopy/Dockerfile --build-arg BASE=${BASE} -t emacs-gopy -t wwarner/emacs-gopy:${FP}-${ARCH} ./emacs-gopy

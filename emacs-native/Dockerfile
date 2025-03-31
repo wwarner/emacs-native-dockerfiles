@@ -24,8 +24,6 @@ RUN apt-get update -y && \
     libgccjit-12-dev \
     libgccjit0 \
     libgnutls28-dev \
-    libjansson4 \
-    libjansson-dev \
     libncurses-dev \
     libssl-dev \
     libtree-sitter-dev \
