@@ -17,13 +17,15 @@ ARCH=$(shell uname -m)
 BASE=${FP}-${ARCH}
 
 emacs-native:
-	docker build --progress plain --build-arg EMACS_BRANCH=${EMACS_BRANCH} -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
+	docker build --build-arg EMACS_BRANCH=${EMACS_BRANCH} -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
 
 emacs-gopy: emacs-native
-	docker build --progress plain -f emacs-gopy/Dockerfile --build-arg BASE=${BASE} -t emacs-gopy -t wwarner/emacs-gopy:${FP}-${ARCH} ./emacs-gopy
+	cd build
+	./build/build.sh go py
 
 push: emacs-gopy
 	docker push wwarner/emacs-native:${FP}-${ARCH}
+	docker tag emacs-go-py wwarner/emacs-gopy:${FP}-${ARCH}
 	docker push wwarner/emacs-gopy:${FP}-${ARCH}
 
 manifests:
