@@ -39,9 +39,7 @@ EOF
 # Middle
 for d in "${MODES[@]}"; do
     part="${d}/Dockerfile.part"
-    echo "#"         >> "${DOCKERFILE}"
-    echo "# ${part}" >> "${DOCKERFILE}"
-    cat "$part"      >> "${DOCKERFILE}"
+    { echo "#"; echo "# ${part}"; cat "$part"; } >> "${DOCKERFILE}"
 done
 
 # Bottom
@@ -52,7 +50,7 @@ RUN emacs -Q --script ".emacs.d/init.el"
 CMD ["emacs"]
 EOF
 
-docker build -t "${DOCKER_TAG}" -f "${DOCKERFILE}" .
+BUILDKIT_PROGRESS=plain docker build -t "${DOCKER_TAG}" -f "${DOCKERFILE}" .
 echo "sample invocation:"
 cat<<_EOF
   docker run -it --rm \\

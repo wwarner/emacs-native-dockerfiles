@@ -1,0 +1,10 @@
+# Copyright 2024 William Warner
+# SPDX-License-Identifier: GPL-3.0-only
+
+RUN mkdir -p /usr/local/lua-language-server-3.15.0 && \
+    cd /usr/local/lua-language-server-3.15.0 && \
+    curl -s -L https://github.com/LuaLS/lua-language-server/releases/download/3.15.0/lua-language-server-3.15.0-linux-arm64.tar.gz | \
+    tar xvzf - && \
+    ln -s $PWD/bin/lua-language-server /usr/local/bin
+
+COPY lua/.emacs.d .emacs.d
