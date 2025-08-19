@@ -9,18 +9,22 @@ then
     exit 1
 fi
 
+DOCKER_TAG_SUFF=""
 MODES_AVAILABLE=($(ls))
-MODES=("$@")
-if [ "$1" == "all" ]
-then
-    MODES=("${MODES_AVAILABLE[@]}")
-fi
-set -eu -o pipefail
-DOCKER_TAG=emacs-$(printf '%s-' "${MODES[@]}") # join args
-DOCKER_TAG=${DOCKER_TAG%-} # Remove trailing dash
-DOCKER_TAG=$(echo "$DOCKER_TAG" | tr '/_' '-' | tr '[:upper:]' '[:lower:]')
+MODES=("${MODES_AVAILABLE[@]}")
 
-EMACS_BRANCH="${EMACS_BRANCH:=30.1}"
+if [ "$1" != "all" ]
+then
+    MODES=("$@")
+    DOCKER_TAG_SUFF=-$(printf '%s-' "${MODES[@]}") # join args
+    DOCKER_TAG_SUFF=${DOCKER_TAG_SUFF%-} # Remove trailing dash
+    DOCKER_TAG_SUFF=$(echo "$DOCKER_TAG_SUFF" | tr '/_' '-' | tr '[:upper:]' '[:lower:]')
+fi
+DOCKER_TAG="emacs-native${DOCKER_TAG_SUFF}"
+
+set -eu -o pipefail
+
+EMACS_BRANCH="${EMACS_BRANCH:=30.2}"
 FP=v"${EMACS_BRANCH}"-"$(printf '%04d' "$(git rev-list --count --no-merges HEAD)")"-"$(git rev-parse --short HEAD)"
 ARCH=$(uname -m)
 BASE=${FP}-${ARCH}
@@ -32,7 +36,7 @@ cat > "$DOCKERFILE" <<EOF
 # SPDX-License-Identifier: GPL-3.0-only
 # file generated with build.sh $@
 ARG BASE="${BASE}"
-FROM wwarner/emacs-native:${BASE}
+FROM emacs-native
 
 EOF
 
