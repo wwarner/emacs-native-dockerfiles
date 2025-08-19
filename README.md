@@ -9,7 +9,7 @@ same everywhere!
 
 Run directly from the image at dockerhub:
 
-	docker run -it --rm --name emacs-go-cpp \
+	docker run -it --rm --name emacs-native \
 	  -v$HOME/src:/root/src \
 	  -v$HOME/.gitconfig:/etc/gitconfig \
 	  -v$HOME/.ssh:/root/.ssh \
@@ -21,7 +21,7 @@ Or build it locally
     git clone git@github.com:wwarner/emacs-native-dockerfiles.git
 	cd emacs-native-dockerfiles
 	make
-	docker run -it --rm --name emacs-go-cpp \
+	docker run -it --rm --name emacs-native\
 	  -v$HOME/src:/root/src \
 	  -v$HOME/.gitconfig:/root/.gitconfig \
 	  -v$HOME/.ssh:/root/.ssh \
