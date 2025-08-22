@@ -18,7 +18,6 @@ BASE=${FP}-${ARCH}
 
 emacs-native:
 	docker build --build-arg EMACS_BRANCH=${EMACS_BRANCH} -f emacs-native/Dockerfile -t emacs-native -t wwarner/emacs-native:${FP}-${ARCH} ./emacs-native
-	cd build
 	./build/build.sh all
 
 push: emacs-native
