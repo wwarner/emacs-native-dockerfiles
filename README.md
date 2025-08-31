@@ -14,7 +14,7 @@ Run directly from the image at dockerhub:
 	  -v$HOME/.gitconfig:/etc/gitconfig \
 	  -v$HOME/.ssh:/root/.ssh \
 	  -v$HOME/.aws:/root/.aws \
-	  emacs-native
+	  wwarner/emacs-native:latest
 
 Or build it locally
 
