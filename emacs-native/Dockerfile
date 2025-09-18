@@ -4,58 +4,28 @@
 FROM debian:bookworm-20250113-slim
 ARG EMACS_BRANCH
 
+COPY debian-backports.sources /etc/apt/sources.list.d/debian-backports.sources
+
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y && \
-    apt-get install -y \
+RUN apt-get update -t bookworm-backports -y && \
+    apt-get install -t bookworm-backports -y \
     apt-transport-https \
     autoconf \
     build-essential \
     ca-certificates \
-    cargo \
     cmake \
     curl \
+    emacs \
     fzf \
     gcc-12 \
     git \
-    gnupg \
-    gnupg-agent \
-    gnutls-bin \
-    libffi-dev \
-    libgccjit-12-dev \
-    libgccjit0 \
-    libgnutls28-dev \
-    libncurses-dev \
-    libssl-dev \
-    libtree-sitter-dev \
     libvterm-dev \
-    openssh-client \
-    pkg-config \
     ripgrep \
-    software-properties-common \
-    texinfo \
     w3m \
     wget \
-    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /opt
-RUN git clone --depth 1 --branch emacs-${EMACS_BRANCH} git://git.sv.gnu.org/emacs.git
-
-ENV CC="gcc-12"
-
-WORKDIR /opt/emacs
-RUN ./autogen.sh \
-        && ./configure \
-	--with-native-compilation \
-	--with-json \
-	--with-tree-sitter \
-	--without-x11
-
-RUN make && make install
-
 WORKDIR /root
-
-RUN /bin/rm -rf /opt/emacs
 
 # configure 24 bit color and unicode
 COPY xterm-24bit.terminfo /tmp/xterm-24bit.terminfo
