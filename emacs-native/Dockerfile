@@ -1,21 +1,21 @@
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 
-FROM debian:bookworm-20250113-slim
+FROM debian:trixie-slim
 ARG EMACS_BRANCH
 
 COPY debian-backports.sources /etc/apt/sources.list.d/debian-backports.sources
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -t bookworm-backports -y && \
-    apt-get install -t bookworm-backports -y \
+RUN apt-get update -t trixie-backports -y && \
+    apt-get install -t trixie-backports -y \
     apt-transport-https \
     autoconf \
     build-essential \
     ca-certificates \
     cmake \
     curl \
-    emacs \
+    emacs-nox \
     fzf \
     gcc-12 \
     git \
