@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cd "$(dirname "$(realpath "$0")")"/../modes
+cd "$(dirname "$(realpath "$0")")"/../emacs-native
 
 USAGE="build.sh <mode> [mode]"
 if [ "$#" == "0" ];
@@ -10,7 +10,7 @@ then
 fi
 
 DOCKER_TAG_SUFF=""
-MODES_AVAILABLE=($(ls))
+MODES_AVAILABLE=($(ls modes))
 MODES=("${MODES_AVAILABLE[@]}")
 
 if [ "$1" != "all" ]
@@ -26,7 +26,6 @@ set -eu -o pipefail
 
 EMACS_BRANCH="${EMACS_BRANCH:=30.2}"
 FP=v"${EMACS_BRANCH}"-"$(printf '%04d' "$(git rev-list --count --no-merges HEAD)")"-"$(git rev-parse --short HEAD)"
-ARCH=$(uname -m)
 BASE=${FP}-${ARCH}
 DOCKERFILE=".Dockerfile-${DOCKER_TAG}"
 
@@ -35,14 +34,52 @@ cat > "$DOCKERFILE" <<EOF
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 # file generated with build.sh $@
-ARG BASE="${BASE}"
-FROM emacs-native
+FROM debian:trixie-slim
+ARG EMACS_BRANCH
+
+COPY debian-backports.sources /etc/apt/sources.list.d/debian-backports.sources
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -t trixie-backports -y && \
+    apt-get install -t trixie-backports -y \
+    apt-transport-https \
+    autoconf \
+    build-essential \
+    ca-certificates \
+    cmake \
+    curl \
+    emacs-nox \
+    fzf \
+    gcc-12 \
+    git \
+    libvterm-dev \
+    ripgrep \
+    w3m \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /root
+
+# configure 24 bit color and unicode
+COPY xterm-24bit.terminfo /tmp/xterm-24bit.terminfo
+RUN /usr/bin/tic -x -o ~/.terminfo /tmp/xterm-24bit.terminfo
+ENV TERM=xterm-24bit
+ENV LC_ALL=C.utf8
+ENV LANG=C.UTF-8
+ENV LANGUAGE=C.UTF-8
+
+# vterm behaves better with this setting
+ENV SHELL=bash
+
+WORKDIR /root
+
+COPY .emacs.d .emacs.d
 
 EOF
 
 # Middle
 for d in "${MODES[@]}"; do
-    part="${d}/Dockerfile.part"
+    part="modes/${d}/Dockerfile.part"
     { echo "#"; echo "# ${part}"; cat "$part"; } >> "${DOCKERFILE}"
 done
 
@@ -54,7 +91,7 @@ RUN emacs -Q --script ".emacs.d/init.el"
 CMD ["emacs"]
 EOF
 
-BUILDKIT_PROGRESS=plain docker build -t "${DOCKER_TAG}" -f "${DOCKERFILE}" .
+BUILDKIT_PROGRESS=plain docker build --platform "linux/${ARCH}" -t "${DOCKER_TAG}:${BASE}" -f "${DOCKERFILE}" .
 echo "sample invocation:"
 cat<<_EOF
   docker run -it --rm \\

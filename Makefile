@@ -1,4 +1,4 @@
-.PHONY: emacs-native emacs-gopy
+.PHONY: arm64 x86_64 emacs-native push manifests
 
 # To publish images, build arm on an M1, build amd on an ec2
 # instance. Push the tagged images to dockerhub. Then on either host,
@@ -13,16 +13,16 @@
 
 EMACS_BRANCH=30.2
 FP=v${EMACS_BRANCH}-$(shell printf '%04d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
-ARCH=$(shell uname -m)
-BASE=${FP}-${ARCH}
 
-emacs-native:
-	BUILDKIT_PROGRESS=plain docker build --build-arg EMACS_BRANCH=${EMACS_BRANCH} -f emacs-native/Dockerfile -t emacs-native ./emacs-native
-	./build/build.sh all
-	docker tag emacs-native wwarner/emacs-native:${FP}-${ARCH}
+emacs-native: arm64 x86_64
+
+arm64 x86_64:
+	ARCH=$@ ./build/build.sh all
+	docker tag emacs-native:${FP}-$@ wwarner/emacs-native:${FP}-$@
 
 push: emacs-native
-	docker push wwarner/emacs-native:${FP}-${ARCH}
+	docker push wwarner/emacs-native:${FP}-arm64
+	docker push wwarner/emacs-native:${FP}-x86_64
 
 manifests:
 	docker pull wwarner/emacs-native:${FP}-arm64
