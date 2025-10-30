@@ -13,6 +13,6 @@ RUN apt-get update && \
 
 RUN python3 -m venv /root/.virtualenv
 ENV PATH="/root/.virtualenv/bin:$PATH"
-RUN pip install pyright
+RUN pip install shandy-sqlfmt sqlfluff
 
-COPY py/.emacs.d .emacs.d
+COPY modes/sql/.emacs.d .emacs.d

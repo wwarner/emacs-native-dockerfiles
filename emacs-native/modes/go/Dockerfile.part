@@ -9,4 +9,4 @@ RUN go install github.com/go-delve/delve/cmd/dlv@latest
 RUN go install golang.org/x/tools/gopls@latest
 RUN go install mvdan.cc/gofumpt@latest
 
-COPY go/.emacs.d .emacs.d
+COPY modes/go/.emacs.d .emacs.d

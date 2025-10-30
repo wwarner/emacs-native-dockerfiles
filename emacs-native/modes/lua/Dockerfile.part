@@ -7,4 +7,4 @@ RUN mkdir -p /usr/local/lua-language-server-3.15.0 && \
     tar xvzf - && \
     ln -s $PWD/bin/lua-language-server /usr/local/bin
 
-COPY lua/.emacs.d .emacs.d
+COPY modes/lua/.emacs.d .emacs.d
