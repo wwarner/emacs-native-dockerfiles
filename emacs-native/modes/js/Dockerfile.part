@@ -1,0 +1,16 @@
+# Copyright 2024 William Warner
+# SPDX-License-Identifier: GPL-3.0-only
+ENV DEBIAN_FRONTEND=noninteractive
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+RUN apt-get update && \
+    apt-get install -y \
+    nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install TypeScript language server and Prettier for formatting
+RUN npm install -g typescript-language-server typescript prettier
+
+# Copy JavaScript/TypeScript specific configuration
+RUN mkdir -p .emacs.d/init.d
+COPY modes/js/.emacs.d/init.d/js.el .emacs.d/init.d/js.el
+
