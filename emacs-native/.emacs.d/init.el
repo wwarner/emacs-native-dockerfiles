@@ -56,10 +56,10 @@
 (use-package iedit)
 (use-package indent-tools)
 (use-package inkpot-theme)
-(use-package json-mode)
 (use-package magit)
 (use-package rainbow-delimiters)
 (use-package solarized-theme)
+(use-package treesit-fold)
 (use-package uuidgen)
 (use-package zenburn-theme)
 
@@ -96,11 +96,6 @@
 (use-package soft-charcoal-theme
   :config (load-theme 'soft-charcoal t)
   (set-face-background 'mode-line "#555555"))
-
-(use-package yaml-mode
-  :config (add-hook 'yaml-mode-hook (lambda ()
-				      (indent-tools-minor-mode)
-				      (display-line-numbers-mode))))
 
 (add-hook 'prog-mode-hook
 	  (lambda ()

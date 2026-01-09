@@ -1,0 +1,35 @@
+# Copyright 2024 William Warner
+# SPDX-License-Identifier: GPL-3.0-only
+ENV DEBIAN_FRONTEND=noninteractive
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+RUN apt-get update && \
+    apt-get install -y \
+    nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN npm install --global yaml-language-server
+
+ARG HELM_LS_VERSION=v0.5.4
+RUN set -eux; \
+    ARCH=$(uname -m) && \
+    case "${ARCH}" in \
+        x86_64) \
+            BINARY_NAME="helm_ls_linux_amd64" \
+            ;; \
+        aarch64) \
+            BINARY_NAME="helm_ls_linux_arm64" \
+            ;; \
+        armv7l|armv6l) \
+            BINARY_NAME="helm_ls_linux_arm" \
+            ;; \
+        *) \
+            echo "Unsupported architecture: ${ARCH}"; \
+            exit 1 \
+            ;; \
+    esac && \
+    echo "Downloading helm-ls ${HELM_LS_VERSION} for ${BINARY_NAME} (detected arch: ${ARCH})" && \
+    curl -L -f "https://github.com/mrjosh/helm-ls/releases/download/${HELM_LS_VERSION}/${BINARY_NAME}" \
+        -o /usr/local/bin/helm_ls && \
+    chmod +x /usr/local/bin/helm_ls
+
+COPY modes/yml/.emacs.d .emacs.d

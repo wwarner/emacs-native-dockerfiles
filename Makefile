@@ -24,13 +24,15 @@ push: emacs-native
 	docker push wwarner/emacs-native:${FP}-arm64
 	docker push wwarner/emacs-native:${FP}-x86_64
 
-manifests:
+manifests: push
 	docker pull wwarner/emacs-native:${FP}-arm64
 	docker pull wwarner/emacs-native:${FP}-x86_64
 	docker manifest create wwarner/emacs-native:${FP} \
 	       --amend wwarner/emacs-native:${FP}-arm64 \
                --amend wwarner/emacs-native:${FP}-x86_64
 	docker manifest push wwarner/emacs-native:${FP}
+
+latest: manifests
 	docker manifest rm wwarner/emacs-native:latest
 	docker manifest create wwarner/emacs-native:latest \
 	       --amend wwarner/emacs-native:${FP}-arm64 \
