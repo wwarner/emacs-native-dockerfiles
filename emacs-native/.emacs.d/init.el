@@ -144,7 +144,7 @@
           (tsx        . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
           (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
           (vue        . ("https://github.com/tree-sitter-grammars/tree-sitter-vue"))
-          (yaml       . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
+          (yaml       . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml" "v0.7.2"))
 	  )
 	)
   )
