@@ -1,7 +1,7 @@
 Dockerfiles for Emacs With Native Compilation
 =============================================
 
-Native Compilation, 24 bit color, LSP, Eglot, Gopls, Pyright, Ripgrep,
+Native Compilation, 24 bit color, LSP, Eglot, Gptel, Gopls, Pyright, Ripgrep,
 Fzf, Treemacs, HideShow and more. Eliminates trial and error. Runs the
 same everywhere!
 
@@ -36,19 +36,53 @@ Or build it locally
 
 Emacs lisp can be compiled to native machine code when built
 `--with-native-compilation` enabled, resulting in a perceptible
-performance improvement. There are several OS level dependencides
-required by native compilation that are captured in this Dockerfile,
-including libgccjit and gnutls.
+performance improvement. This image is based on alpine's
+emacs-x11-nativecomp for that reason.
 
-## Native JSON with libjansson
+## Modes
 
-Native json support is also supported by enabling `--with-json` and
-its libjansson dependencies.
+* ai
 
-## LSPs
+`gptel`, `mcp-hub`, and a couple of mcps installed.
 
-Each language has it's own procedure for installing its lsp, captured
-in `modes/{{lang}}/Docker.part`.
+* cpp
+
+`clangd` and `bear`
+
+* go
+
+`go` toolchain, `dlv`, `gopls` and `gofumpt`
+
+* js
+
+`typescript-language-server`, `typescript`, `prettier` installed and
+configured for js, ts & json
+
+* lua
+
+`lua-language-server`
+
+* py
+
+`pyright`
+
+* sh
+
+`bash-language-server`
+
+* sql
+
+`shandy-sqlfmt`, `sqlfluff`
+
+* yml
+
+`yaml-language-server`, `helm_ls`, `indent-tools-minor-mode`, also `yaml-ts-mode`
+
+## Treesit
+
+Treesitter grammars for yaml, javascript, json, typescript and tsx are
+installed. Locations for many other languages are captured, so that
+`treesit-install-grammar` works without fuss.
 
 ## No X11
 
@@ -56,9 +90,8 @@ I have been running emacs without windows for several years now
 because it's so fast and portable. In particular, when working with a
 lot of data, I find that I need to run emacs on a server in the
 cloud. Somewhere along the line, I realized that emacs is a lot more
-fun without graphics. The compilation step in this build is also much
-much faster `--without-x11`. If you want your graphics back, then just
-drop that configuration flag.
+fun without graphics. If you want your graphics back, you can try
+running build/emacs-x11.sh.
 
 ## 24bit Color & Unicode
 
