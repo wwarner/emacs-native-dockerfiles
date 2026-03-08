@@ -1,40 +1,41 @@
-.PHONY: arm64 x86_64 emacs-native push manifests
+.PHONY: docker arm64 amd64 build push latest
 
-# To publish images, build arm on an M1, build amd on an ec2
-# instance. Push the tagged images to dockerhub. Then on either host,
-# pull down all the images, for every arch. From there, create and
-# then push the manifest.
-#
-# i.e.
-# on an arm host
-# % make push
-# now on an amd host
-# $ make push manifests
+# make docker  - creates Dockerfile in emacs-native/
+# make arm64   - builds local arm64 image
+# make amd64   - builds local amd64 image
+# make build   - builds both images, tags this host's arch as emacs-native:latest (then: docker run emacs-native)
+# make push    - pushes both images and creates a single multi-arch manifest on Docker Hub
+# make latest  - tags the Docker Hub manifest as :latest
 
-EMACS_BRANCH=30.2
-FP=v${EMACS_BRANCH}-$(shell printf '%04d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
+EMACS_BRANCH ?= 30.2
+FP = v$(EMACS_BRANCH)-$(shell printf '%04d' $(shell git rev-list --count --no-merges HEAD))-$(shell git rev-parse --short HEAD)
+DOCKERFILE = emacs-native/Dockerfile
+CONTEXT = emacs-native
+ARCH = $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
 
-emacs-native: arm64 x86_64
+build: arm64 amd64
+	docker tag emacs-native:$(FP)-$(ARCH) emacs-native:latest
 
-arm64 x86_64:
-	ARCH=$@ ./build/build.sh all
-	docker tag emacs-native:${FP}-$@ wwarner/emacs-native:${FP}-$@
+docker:
+	./build/build.sh all
 
-push: emacs-native
-	docker push wwarner/emacs-native:${FP}-arm64
-	docker push wwarner/emacs-native:${FP}-x86_64
+arm64 amd64: docker
+	BUILDKIT_PROGRESS=plain docker build --platform linux/$@ \
+		-t emacs-native:$(FP)-$@ \
+		-f $(DOCKERFILE) $(CONTEXT)
+	docker tag emacs-native:$(FP)-$@ wwarner/emacs-native:$(FP)-$@
 
-manifests: push
-	docker pull wwarner/emacs-native:${FP}-arm64
-	docker pull wwarner/emacs-native:${FP}-x86_64
-	docker manifest create wwarner/emacs-native:${FP} \
-	       --amend wwarner/emacs-native:${FP}-arm64 \
-               --amend wwarner/emacs-native:${FP}-x86_64
-	docker manifest push wwarner/emacs-native:${FP}
+push: build
+	docker push wwarner/emacs-native:$(FP)-arm64
+	docker push wwarner/emacs-native:$(FP)-amd64
+	docker manifest create wwarner/emacs-native:$(FP) \
+		--amend wwarner/emacs-native:$(FP)-arm64 \
+		--amend wwarner/emacs-native:$(FP)-amd64
+	docker manifest push wwarner/emacs-native:$(FP)
 
-latest: manifests
-	docker manifest rm wwarner/emacs-native:latest
+latest: push
+	-docker manifest rm wwarner/emacs-native:latest
 	docker manifest create wwarner/emacs-native:latest \
-	       --amend wwarner/emacs-native:${FP}-arm64 \
-               --amend wwarner/emacs-native:${FP}-x86_64
+		--amend wwarner/emacs-native:$(FP)-arm64 \
+		--amend wwarner/emacs-native:$(FP)-amd64
 	docker manifest push wwarner/emacs-native:latest
