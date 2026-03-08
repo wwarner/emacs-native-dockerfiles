@@ -1,8 +1,5 @@
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
-    apt-get install -y \
-    clangd \
-    bear && \
-    rm -rf /var/lib/apt/lists/*
+
+# clangd is provided by clang21-extra-tools (no standalone clangd package on Alpine)
+RUN apk add --no-cache clang21-extra-tools bear

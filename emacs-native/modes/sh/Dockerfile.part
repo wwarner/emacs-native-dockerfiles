@@ -1,14 +1,7 @@
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
-    apt-get install -y \
-    nodejs \
-    shellcheck \
-    shfmt && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache nodejs npm shellcheck shfmt
 RUN npm i -g bash-language-server
 
 COPY modes/sh/.emacs.d .emacs.d

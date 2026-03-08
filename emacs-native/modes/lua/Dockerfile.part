@@ -1,10 +1,17 @@
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 
-RUN mkdir -p /usr/local/lua-language-server-3.15.0 && \
-    cd /usr/local/lua-language-server-3.15.0 && \
-    curl -s -L https://github.com/LuaLS/lua-language-server/releases/download/3.15.0/lua-language-server-3.15.0-linux-arm64.tar.gz | \
-    tar xvzf - && \
-    ln -s $PWD/bin/lua-language-server /usr/local/bin
+ARG LUA_LS_VERSION=3.15.0
+RUN set -eux; \
+    ARCH=$(uname -m); \
+    case "${ARCH}" in \
+        x86_64) LUA_ARCH=x64 ;; \
+        aarch64) LUA_ARCH=arm64 ;; \
+        *) echo "Unsupported architecture: ${ARCH}"; exit 1 ;; \
+    esac; \
+    mkdir -p /usr/local/lua-language-server-${LUA_LS_VERSION}; \
+    cd /usr/local/lua-language-server-${LUA_LS_VERSION}; \
+    curl -s -L "https://github.com/LuaLS/lua-language-server/releases/download/${LUA_LS_VERSION}/lua-language-server-${LUA_LS_VERSION}-linux-${LUA_ARCH}.tar.gz" | tar xvzf -; \
+    ln -sf /usr/local/lua-language-server-${LUA_LS_VERSION}/bin/lua-language-server /usr/local/bin/lua-language-server
 
 COPY modes/lua/.emacs.d .emacs.d
