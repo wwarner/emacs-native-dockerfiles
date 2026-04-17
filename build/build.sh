@@ -44,7 +44,6 @@ RUN apk add --no-cache \
     libvterm-dev \
     ncurses \
     openssh-client \
-    rcs \
     ripgrep \
     w3m \
     wget
