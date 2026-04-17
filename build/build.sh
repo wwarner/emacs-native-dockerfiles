@@ -27,26 +27,29 @@ cat > "$DOCKERFILE" <<EOF
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 # file generated with build.sh $@
-FROM alpine:3.23
+FROM debian:trixie-slim
 ARG EMACS_BRANCH
 
-RUN apk add --no-cache \
+COPY debian-backports.sources /etc/apt/sources.list.d/debian-backports.sources
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -t trixie-backports -y && \
+    apt-get install -t trixie-backports -y \
+    apt-transport-https \
     autoconf \
-    bash \
-    build-base \
+    build-essential \
     ca-certificates \
     cmake \
     curl \
-    emacs-x11-nativecomp \
-    emacs-vterm \
+    emacs-nox \
     fzf \
+    gcc-12 \
     git \
     libvterm-dev \
-    ncurses \
-    openssh-client \
     ripgrep \
     w3m \
-    wget
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
 
