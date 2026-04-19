@@ -11,7 +11,7 @@ Run directly from the image at dockerhub:
 
 	docker run -it --rm --name emacs-native \
 	  -v$HOME/src:/root/src \
-	  -v$HOME/.gitconfig:/etc/gitconfig \
+	  -v$HOME/.gitconfig:/root/.gitconfig \
 	  -v$HOME/.ssh:/root/.ssh \
 	  -v$HOME/.aws:/root/.aws \
 	  wwarner/emacs-native:latest
@@ -111,7 +111,7 @@ your commits can be mapped to your github email.
 		name = wenjie
     	email = 9873498+wenjie9489@users.noreply.github.com
 
-Either way, mount ~/.gitconfig to /etc/gitconfig to allow git to work
+Either way, mount ~/.gitconfig to /root/.gitconfig to allow git to work
 inside the container.
 
 In addition to all of that, git needs your ssh keys for all
