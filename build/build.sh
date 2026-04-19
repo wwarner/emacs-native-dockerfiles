@@ -1,4 +1,5 @@
 #! /bin/bash
+set -eu -o pipefail
 
 cd "$(dirname "$(realpath "$0")")"/../emacs-native
 
@@ -27,14 +28,12 @@ cat > "$DOCKERFILE" <<EOF
 # Copyright 2024 William Warner
 # SPDX-License-Identifier: GPL-3.0-only
 # file generated with build.sh $@
-FROM debian:trixie-slim
+FROM debian:forky-slim
 ARG EMACS_BRANCH
 
-COPY debian-backports.sources /etc/apt/sources.list.d/debian-backports.sources
-
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -t trixie-backports -y && \
-    apt-get install -t trixie-backports -y \
+RUN apt-get update -y && \
+    apt-get install -y \
     apt-transport-https \
     autoconf \
     build-essential \
